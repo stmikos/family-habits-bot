@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Habits - Добавить детей</title>
+    <link rel="stylesheet" href="design-system.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Telegram WebApp API -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="telegram-webapp.js"></script>
+    
+    <style>
+        .children-hero {
+            text-align: center;
+            padding: var(--spacing-lg) 0;
+            background: linear-gradient(135deg, rgba(168, 201, 138, 0.1) 0%, rgba(184, 216, 186, 0.1) 100%);
+            border-radius: var(--border-radius-xl);
+            margin-bottom: var(--spacing-lg);
+            border: 1px solid rgba(168, 201, 138, 0.3);
+        }
+        
+        .child-form {
+            background: var(--bg-card);
+            border: 1px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .child-form:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-card);
+        }
+        
+        .child-form.completed {
+            border-color: var(--success);
+            background: rgba(123, 160, 91, 0.05);
+        }
+        
+        .child-number {
+            position: absolute;
+            top: -10px;
+            left: var(--spacing-md);
+            background: var(--primary-green);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-xs);
+            font-weight: var(--font-bold);
+        }
+        
+        .age-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+            gap: var(--spacing-xs);
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .age-option {
+            padding: var(--spacing-xs);
+            border: 2px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold);
+        }
+        
+        .age-option:hover {
+            border-color: var(--primary-green);
+        }
+        
+        .age-option.selected {
+            border-color: var(--primary-green);
+            background: var(--primary-green);
+            color: white;
+        }
+        
+        .avatar-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+            gap: var(--spacing-xs);
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .avatar-option {
+            width: 50px;
+            height: 50px;
+            border: 2px solid rgba(107, 142, 78, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-elevated);
+        }
+        
+        .avatar-option:hover {
+            transform: scale(1.1);
+            border-color: var(--primary-green);
+        }
+        
+        .avatar-option.selected {
+            border-color: var(--primary-green);
+            box-shadow: var(--glow-green);
+            transform: scale(1.1);
+        }
+        
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: var(--spacing-xs);
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .interest-tag {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 2px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: var(--text-xs);
+            background: var(--bg-elevated);
+        }
+        
+        .interest-tag:hover {
+            border-color: var(--primary-green);
+        }
+        
+        .interest-tag.selected {
+            border-color: var(--primary-green);
+            background: rgba(107, 142, 78, 0.1);
+            color: var(--primary-green);
+        }
+        
+        .add-child-btn {
+            border: 2px dashed rgba(107, 142, 78, 0.4);
+            background: transparent;
+            color: var(--primary-green);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-md) 0;
+            width: 100%;
+            border-radius: var(--border-radius-lg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: var(--text-base);
+            font-weight: var(--font-semibold);
+        }
+        
+        .add-child-btn:hover {
+            border-color: var(--primary-green);
+            background: rgba(107, 142, 78, 0.05);
+        }
+        
+        .family-preview {
+            background: rgba(168, 201, 138, 0.1);
+            border: 1px solid var(--soft-green);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .preview-member {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .preview-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            border: 2px solid var(--primary-green);
+        }
+        
+        .mascot-encouragement {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: var(--gradient-reward);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-lg);
+            margin: var(--spacing-md) 0;
+            border: 2px solid var(--accent-green);
+        }
+        
+        .mascot-small {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Шаги регистрации -->
+        <div class="progress-steps">
+            <div class="step completed">✓</div>
+            <div class="step active">2</div>
+            <div class="step">3</div>
+        </div>
+
+        <!-- Герои-талисманы -->
+        <div class="children-hero">
+            <div class="mascot-container">
+                <div class="mascot">👶</div>
+                <div class="mascot mascot-punk">🧒</div>
+            </div>
+            <h1 class="heading-1 text-neon">Добавьте ваших детей</h1>
+            <p class="text-secondary">Хабит и Хабби помогут каждому ребенку развивать свои уникальные привычки!</p>
+        </div>
+
+        <!-- Поощрение от талисманов -->
+        <div class="mascot-encouragement">
+            <div class="mascot-small">🌱</div>
+            <div>
+                <strong>Хабит говорит:</strong> "Расскажите нам о ваших детях! Мы подберем персональные задачи для каждого 🎯"
+            </div>
+        </div>
+
+        <!-- Форма детей -->
+        <div id="childrenContainer">
+            <!-- Дети будут добавляться динамически -->
+        </div>
+
+        <!-- Кнопка добавления ребенка -->
+        <button class="add-child-btn" onclick="addChild()">
+            ➕ Добавить ребенка
+        </button>
+
+        <!-- Предварительный просмотр семьи -->
+        <div class="family-preview" id="familyPreview" style="display: none;">
+            <h3 class="heading-3">👨‍👩‍👧‍👦 Ваша семья:</h3>
+            <div id="previewContainer"></div>
+        </div>
+
+        <!-- Навигация -->
+        <div class="flex gap-sm" style="margin-top: var(--spacing-xl);">
+            <button class="btn btn-ghost" onclick="goBack()">
+                ⬅️ Назад
+            </button>
+            <button class="btn btn-primary btn-large" style="flex: 1;" onclick="completeRegistration()">
+                Завершить регистрацию ✨
+            </button>
+        </div>
+
+        <!-- Поощрение снизу -->
+        <div class="text-center" style="margin: var(--spacing-xl) 0;">
+            <div class="mascot-container">
+                <div class="mascot">🎉</div>
+                <div class="mascot mascot-punk">🚀</div>
+            </div>
+            <p class="text-muted">Почти готово! Хабби уже готовит первые задачи!</p>
+        </div>
+    </div>
+
+    <script>
+        let childCount = 0;
+        const maxChildren = 6;
+        
+        const avatars = ['👧', '👦', '🧒', '👶', '🎈', '🌟', '🦄', '🐻', '🐨', '🐧'];
+        const interests = ['🎮', '📚', '🎨', '⚽', '🎵', '🧩', '🔬', '🎭', '🏃', '🍳', '🌱', '🎯'];
+        
+        function createChildForm(index) {
+            return `
+                <div class="child-form" data-child="${index}">
+                    <div class="child-number">${index + 1}</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">👶 Имя ребенка</label>
+                        <input type="text" class="form-input" placeholder="Имя" data-field="name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🎂 Возраст</label>
+                        <div class="age-selector">
+                            ${Array.from({length: 15}, (_, i) => i + 2).map(age => 
+                                `<div class="age-option" data-age="${age}">${age}</div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">😊 Выберите аватар</label>
+                        <div class="avatar-selector">
+                            ${avatars.map(avatar => 
+                                `<div class="avatar-option" data-avatar="${avatar}">${avatar}</div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">🎯 Интересы (необязательно)</label>
+                        <div class="interests-grid">
+                            ${interests.map(interest => 
+                                `<div class="interest-tag" data-interest="${interest}">${interest}</div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-ghost btn-small" onclick="removeChild(${index})">
+                        🗑️ Удалить
+                    </button>
+                </div>
+            `;
+        }
+        
+        function addChild() {
+            if (childCount >= maxChildren) {
+                alert('🌱 Максимум 6 детей можно добавить!');
+                return;
+            }
+            
+            const container = document.getElementById('childrenContainer');
+            const childForm = document.createElement('div');
+            childForm.innerHTML = createChildForm(childCount);
+            container.appendChild(childForm.firstElementChild);
+            
+            // Добавляем обработчики событий
+            setupChildFormHandlers(childCount);
+            childCount++;
+            
+            updateFamilyPreview();
+        }
+        
+        function removeChild(index) {
+            const childForm = document.querySelector(`[data-child="${index}"]`);
+            if (childForm) {
+                childForm.remove();
+                updateFamilyPreview();
+            }
+        }
+        
+        function setupChildFormHandlers(index) {
+            const form = document.querySelector(`[data-child="${index}"]`);
+            
+            // Обработка выбора возраста
+            form.querySelectorAll('.age-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    form.querySelectorAll('.age-option').forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                    updateChildCompletion(form);
+                });
+            });
+            
+            // Обработка выбора аватара
+            form.querySelectorAll('.avatar-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    form.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                    updateChildCompletion(form);
+                });
+            });
+            
+            // Обработка интересов
+            form.querySelectorAll('.interest-tag').forEach(tag => {
+                tag.addEventListener('click', () => {
+                    tag.classList.toggle('selected');
+                });
+            });
+            
+            // Обработка имени
+            form.querySelector('[data-field="name"]').addEventListener('input', () => {
+                updateChildCompletion(form);
+            });
+        }
+        
+        function updateChildCompletion(form) {
+            const name = form.querySelector('[data-field="name"]').value;
+            const selectedAge = form.querySelector('.age-option.selected');
+            const selectedAvatar = form.querySelector('.avatar-option.selected');
+            
+            if (name && selectedAge && selectedAvatar) {
+                form.classList.add('completed');
+            } else {
+                form.classList.remove('completed');
+            }
+            
+            updateFamilyPreview();
+        }
+        
+        function updateFamilyPreview() {
+            const preview = document.getElementById('familyPreview');
+            const container = document.getElementById('previewContainer');
+            const children = document.querySelectorAll('.child-form.completed');
+            
+            if (children.length > 0) {
+                preview.style.display = 'block';
+                
+                let previewHTML = `
+                    <div class="preview-member">
+                        <div class="preview-avatar">👨‍💼</div>
+                        <div>
+                            <strong>Родитель</strong>
+                            <div class="text-xs text-muted">Администратор семьи</div>
+                        </div>
+                    </div>
+                `;
+                
+                children.forEach((form, index) => {
+                    const name = form.querySelector('[data-field="name"]').value;
+                    const age = form.querySelector('.age-option.selected')?.dataset.age;
+                    const avatar = form.querySelector('.avatar-option.selected')?.dataset.avatar;
+                    
+                    previewHTML += `
+                        <div class="preview-member">
+                            <div class="preview-avatar">${avatar}</div>
+                            <div>
+                                <strong>${name}</strong>
+                                <div class="text-xs text-muted">${age} лет</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = previewHTML;
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+        
+        function goBack() {
+            window.location.href = 'registration.html';
+        }
+        
+        function completeRegistration() {
+            const completedChildren = document.querySelectorAll('.child-form.completed');
+            
+            if (completedChildren.length === 0) {
+                alert('🌱 Добавьте хотя бы одного ребенка для продолжения!');
+                return;
+            }
+            
+            // Сбор данных
+            const familyData = {
+                children: Array.from(completedChildren).map(form => ({
+                    name: form.querySelector('[data-field="name"]').value,
+                    age: form.querySelector('.age-option.selected').dataset.age,
+                    avatar: form.querySelector('.avatar-option.selected').dataset.avatar,
+                    interests: Array.from(form.querySelectorAll('.interest-tag.selected')).map(tag => tag.dataset.interest)
+                }))
+            };
+            
+            console.log('Family data:', familyData);
+            
+            // Анимация успеха
+            const button = event.target;
+            button.textContent = '✅ Семья создана!';
+            button.classList.remove('btn-primary');
+            button.classList.add('btn-reward');
+            
+            setTimeout(() => {
+                alert('🎉 Поздравляем! Ваша семья зарегистрирована!\n\n🌱 Хабит и Хабби уже готовят первые задачи для всех!');
+                window.location.href = 'welcome.html';
+            }, 1500);
+        }
+        
+        // Автоматически добавляем первого ребенка
+        document.addEventListener('DOMContentLoaded', () => {
+            addChild();
+        });
+    </script>
+</body>
+</html>

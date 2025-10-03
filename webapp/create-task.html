@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Habits - Создание задачи</title>
+    <link rel="stylesheet" href="design-system.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Telegram WebApp API -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="telegram-webapp.js"></script>
+    
+    <style> html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Habits - Создать задачу</title>
+    <link rel="stylesheet" href="design-system.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .task-hero {
+            text-align: center;
+            padding: var(--spacing-lg) 0;
+            background: linear-gradient(135deg, rgba(107, 142, 78, 0.1) 0%, rgba(123, 160, 91, 0.1) 100%);
+            border-radius: var(--border-radius-xl);
+            margin-bottom: var(--spacing-lg);
+            border: 1px solid rgba(107, 142, 78, 0.3);
+        }
+        
+        .task-creator {
+            background: var(--bg-card);
+            border: 1px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-md) 0;
+            box-shadow: var(--shadow-card);
+        }
+        
+        .task-type-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .task-type {
+            background: var(--bg-elevated);
+            border: 2px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .task-type:hover {
+            border-color: var(--primary-green);
+            transform: translateY(-2px);
+            box-shadow: var(--glow-green);
+        }
+        
+        .task-type.selected {
+            border-color: var(--primary-green);
+            background: rgba(107, 142, 78, 0.1);
+            box-shadow: var(--glow-green);
+        }
+        
+        .task-type-icon {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-xs);
+            display: block;
+        }
+        
+        .task-type-title {
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .task-type-desc {
+            font-size: var(--text-xs);
+            color: var(--text-muted);
+        }
+        
+        .assignee-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .assignee-option {
+            background: var(--bg-elevated);
+            border: 2px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-sm);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .assignee-option:hover {
+            border-color: var(--primary-green);
+        }
+        
+        .assignee-option.selected {
+            border-color: var(--primary-green);
+            background: rgba(107, 142, 78, 0.1);
+        }
+        
+        .assignee-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin: 0 auto var(--spacing-xs);
+            border: 2px solid var(--primary-green);
+        }
+        
+        .time-picker {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .reward-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: var(--spacing-xs);
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .reward-option {
+            background: var(--bg-elevated);
+            border: 2px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-xs);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: var(--text-sm);
+        }
+        
+        .reward-option:hover {
+            border-color: var(--primary-green);
+        }
+        
+        .reward-option.selected {
+            border-color: var(--primary-green);
+            background: rgba(107, 142, 78, 0.1);
+            color: var(--primary-green);
+            font-weight: var(--font-semibold);
+        }
+        
+        .template-suggestions {
+            background: rgba(168, 201, 138, 0.1);
+            border: 1px solid var(--soft-green);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .template-item {
+            background: var(--bg-card);
+            border: 1px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-sm);
+            margin: var(--spacing-xs) 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .template-item:hover {
+            border-color: var(--primary-green);
+            background: rgba(107, 142, 78, 0.05);
+        }
+        
+        .template-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .task-preview {
+            background: rgba(123, 160, 91, 0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .preview-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(107, 142, 78, 0.2);
+            border-left: 2px solid var(--primary-green);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-sm);
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .mascot-tip {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: var(--gradient-reward);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius-lg);
+            margin: var(--spacing-md) 0;
+            border: 2px solid var(--accent-green);
+        }
+        
+        .difficulty-selector {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .difficulty-option {
+            flex: 1;
+            padding: var(--spacing-xs);
+            border: 2px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: var(--text-sm);
+        }
+        
+        .difficulty-easy {
+            border-color: var(--success);
+        }
+        
+        .difficulty-medium {
+            border-color: var(--warning);
+        }
+        
+        .difficulty-hard {
+            border-color: var(--error);
+        }
+        
+        .difficulty-option.selected {
+            transform: scale(1.05);
+            font-weight: var(--font-bold);
+        }
+        
+        .difficulty-easy.selected {
+            background: rgba(123, 160, 91, 0.2);
+            color: var(--success);
+        }
+        
+        .difficulty-medium.selected {
+            background: rgba(197, 165, 114, 0.2);
+            color: var(--warning);
+        }
+        
+        .difficulty-hard.selected {
+            background: rgba(193, 123, 123, 0.2);
+            color: var(--error);
+        }
+        
+        .recurring-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: var(--spacing-xs);
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .recurring-option {
+            padding: var(--spacing-xs);
+            border: 2px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: var(--text-sm);
+        }
+        
+        .recurring-option:hover {
+            border-color: var(--primary-green);
+        }
+        
+        .recurring-option.selected {
+            border-color: var(--primary-green);
+            background: rgba(107, 142, 78, 0.1);
+            color: var(--primary-green);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Герои-помощники -->
+        <div class="task-hero">
+            <div class="mascot-container">
+                <div class="mascot">📋</div>
+                <div class="mascot mascot-punk">✨</div>
+            </div>
+            <h1 class="heading-1 text-neon">Создать новую задачу</h1>
+            <p class="text-secondary">Хабит и Хабби помогут создать идеальную привычку для вашей семьи!</p>
+        </div>
+
+        <!-- Совет от талисманов -->
+        <div class="mascot-tip">
+            <div class="mascot-small">💡</div>
+            <div>
+                <strong>Совет от Хабби:</strong> "Начните с простых задач! Лучше выполнять легкую привычку каждый день, чем сложную раз в неделю 🌱"
+            </div>
+        </div>
+
+        <!-- Шаблоны задач -->
+        <div class="template-suggestions">
+            <h3 class="heading-3">🎯 Популярные привычки</h3>
+            <p class="text-secondary">Выберите готовый шаблон или создайте свою уникальную задачу</p>
+            
+            <div class="template-item" onclick="useTemplate('teeth')">
+                <div class="template-icon">🦷</div>
+                <div>
+                    <strong>Чистить зубы</strong>
+                    <div class="text-xs text-muted">Утром и вечером</div>
+                </div>
+            </div>
+            
+            <div class="template-item" onclick="useTemplate('reading')">
+                <div class="template-icon">📚</div>
+                <div>
+                    <strong>Читать перед сном</strong>
+                    <div class="text-xs text-muted">15 минут каждый день</div>
+                </div>
+            </div>
+            
+            <div class="template-item" onclick="useTemplate('cleanup')">
+                <div class="template-icon">🧹</div>
+                <div>
+                    <strong>Убирать игрушки</strong>
+                    <div class="text-xs text-muted">После игр</div>
+                </div>
+            </div>
+            
+            <div class="template-item" onclick="useTemplate('exercise')">
+                <div class="template-icon">🏃</div>
+                <div>
+                    <strong>Семейная зарядка</strong>
+                    <div class="text-xs text-muted">Утром всей семьей</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Форма создания задачи -->
+        <form class="task-creator" id="taskForm">
+            <h2 class="heading-2">📝 Настройка задачи</h2>
+            
+            <!-- Тип задачи -->
+            <div class="form-group">
+                <label class="form-label">🎭 Тип задачи</label>
+                <div class="task-type-selector">
+                    <div class="task-type" data-type="personal">
+                        <span class="task-type-icon">👤</span>
+                        <div class="task-type-title">Личная</div>
+                        <div class="task-type-desc">Для одного человека</div>
+                    </div>
+                    <div class="task-type" data-type="family">
+                        <span class="task-type-icon">👨‍👩‍👧‍👦</span>
+                        <div class="task-type-title">Семейная</div>
+                        <div class="task-type-desc">Для всей семьи</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Название и описание -->
+            <div class="form-group">
+                <label class="form-label" for="taskTitle">📌 Название задачи</label>
+                <input 
+                    type="text" 
+                    id="taskTitle" 
+                    class="form-input" 
+                    placeholder="Например: Почистить зубы перед сном"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="taskDescription">📝 Описание (необязательно)</label>
+                <textarea 
+                    id="taskDescription" 
+                    class="form-input" 
+                    rows="2"
+                    placeholder="Дополнительные детали о задаче..."
+                ></textarea>
+            </div>
+
+            <!-- Назначение -->
+            <div class="form-group">
+                <label class="form-label">👥 Кому назначить</label>
+                <div class="assignee-selector">
+                    <div class="assignee-option" data-assignee="anna">
+                        <div class="assignee-avatar">👧</div>
+                        <div class="text-sm">Аня</div>
+                    </div>
+                    <div class="assignee-option" data-assignee="max">
+                        <div class="assignee-avatar">👦</div>
+                        <div class="text-sm">Максим</div>
+                    </div>
+                    <div class="assignee-option" data-assignee="parent">
+                        <div class="assignee-avatar">👨‍💼</div>
+                        <div class="text-sm">Родители</div>
+                    </div>
+                    <div class="assignee-option" data-assignee="all">
+                        <div class="assignee-avatar">👨‍👩‍👧‍👦</div>
+                        <div class="text-sm">Все</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Сложность -->
+            <div class="form-group">
+                <label class="form-label">⭐ Сложность задачи</label>
+                <div class="difficulty-selector">
+                    <div class="difficulty-option difficulty-easy" data-difficulty="easy">
+                        🟢 Легко<br>
+                        <span class="text-xs">5 звезд</span>
+                    </div>
+                    <div class="difficulty-option difficulty-medium" data-difficulty="medium">
+                        🟡 Средне<br>
+                        <span class="text-xs">10 звезд</span>
+                    </div>
+                    <div class="difficulty-option difficulty-hard" data-difficulty="hard">
+                        🔴 Сложно<br>
+                        <span class="text-xs">20 звезд</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Повторение -->
+            <div class="form-group">
+                <label class="form-label">🔄 Как часто повторять</label>
+                <div class="recurring-options">
+                    <div class="recurring-option" data-recurring="daily">Каждый день</div>
+                    <div class="recurring-option" data-recurring="weekdays">Будни</div>
+                    <div class="recurring-option" data-recurring="weekends">Выходные</div>
+                    <div class="recurring-option" data-recurring="weekly">Раз в неделю</div>
+                    <div class="recurring-option" data-recurring="custom">Настроить</div>
+                </div>
+            </div>
+
+            <!-- Время -->
+            <div class="form-group">
+                <label class="form-label">⏰ Время выполнения</label>
+                <div class="time-picker">
+                    <select class="form-input form-select" id="taskTime">
+                        <option value="">Любое время</option>
+                        <option value="morning">Утром (7:00-12:00)</option>
+                        <option value="afternoon">Днем (12:00-18:00)</option>
+                        <option value="evening">Вечером (18:00-22:00)</option>
+                        <option value="custom">Точное время</option>
+                    </select>
+                    <input type="time" class="form-input" id="exactTime" style="display: none;">
+                </div>
+            </div>
+
+            <!-- Награда -->
+            <div class="form-group">
+                <label class="form-label">🏆 Дополнительная награда (необязательно)</label>
+                <div class="reward-selector">
+                    <div class="reward-option" data-reward="5">+5 ⭐</div>
+                    <div class="reward-option" data-reward="10">+10 ⭐</div>
+                    <div class="reward-option" data-reward="15">+15 ⭐</div>
+                    <div class="reward-option" data-reward="sticker">Наклейка</div>
+                    <div class="reward-option" data-reward="privilege">Привилегия</div>
+                </div>
+            </div>
+
+            <!-- Предварительный просмотр -->
+            <div class="task-preview" id="taskPreview" style="display: none;">
+                <h3 class="heading-3">👀 Предварительный просмотр</h3>
+                <div class="preview-card" id="previewContent">
+                    <!-- Предпросмотр будет генерироваться динамически -->
+                </div>
+            </div>
+
+            <!-- Кнопки действий -->
+            <div class="flex gap-sm" style="margin-top: var(--spacing-lg);">
+                <button type="button" class="btn btn-ghost" onclick="goBack()">
+                    ⬅️ Отмена
+                </button>
+                <button type="submit" class="btn btn-primary btn-large" style="flex: 1;">
+                    Создать задачу ✨
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const templates = {
+            teeth: {
+                title: "Почистить зубы",
+                description: "Чистить зубы утром и вечером",
+                difficulty: "easy",
+                recurring: "daily",
+                time: "morning"
+            },
+            reading: {
+                title: "Читать перед сном",
+                description: "15 минут чтения каждый день",
+                difficulty: "easy",
+                recurring: "daily",
+                time: "evening"
+            },
+            cleanup: {
+                title: "Убирать игрушки",
+                description: "Убирать игрушки после игр",
+                difficulty: "medium",
+                recurring: "daily",
+                time: "evening"
+            },
+            exercise: {
+                title: "Семейная зарядка",
+                description: "10 минут зарядки всей семьей",
+                difficulty: "medium",
+                recurring: "daily",
+                time: "morning"
+            }
+        };
+
+        function useTemplate(templateId) {
+            const template = templates[templateId];
+            if (!template) return;
+
+            document.getElementById('taskTitle').value = template.title;
+            document.getElementById('taskDescription').value = template.description;
+            
+            // Устанавливаем сложность
+            document.querySelectorAll('.difficulty-option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelector(`[data-difficulty="${template.difficulty}"]`).classList.add('selected');
+            
+            // Устанавливаем повторение
+            document.querySelectorAll('.recurring-option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelector(`[data-recurring="${template.recurring}"]`).classList.add('selected');
+            
+            // Устанавливаем время
+            document.getElementById('taskTime').value = template.time;
+            
+            updatePreview();
+        }
+
+        // Обработчики выбора опций
+        document.querySelectorAll('.task-type').forEach(type => {
+            type.addEventListener('click', () => {
+                document.querySelectorAll('.task-type').forEach(t => t.classList.remove('selected'));
+                type.classList.add('selected');
+                updatePreview();
+            });
+        });
+
+        document.querySelectorAll('.assignee-option').forEach(assignee => {
+            assignee.addEventListener('click', () => {
+                document.querySelectorAll('.assignee-option').forEach(a => a.classList.remove('selected'));
+                assignee.classList.add('selected');
+                updatePreview();
+            });
+        });
+
+        document.querySelectorAll('.difficulty-option').forEach(difficulty => {
+            difficulty.addEventListener('click', () => {
+                document.querySelectorAll('.difficulty-option').forEach(d => d.classList.remove('selected'));
+                difficulty.classList.add('selected');
+                updatePreview();
+            });
+        });
+
+        document.querySelectorAll('.recurring-option').forEach(recurring => {
+            recurring.addEventListener('click', () => {
+                document.querySelectorAll('.recurring-option').forEach(r => r.classList.remove('selected'));
+                recurring.classList.add('selected');
+                updatePreview();
+            });
+        });
+
+        document.querySelectorAll('.reward-option').forEach(reward => {
+            reward.addEventListener('click', () => {
+                reward.classList.toggle('selected');
+                updatePreview();
+            });
+        });
+
+        // Обработка изменения времени
+        document.getElementById('taskTime').addEventListener('change', (e) => {
+            const exactTimeInput = document.getElementById('exactTime');
+            if (e.target.value === 'custom') {
+                exactTimeInput.style.display = 'block';
+            } else {
+                exactTimeInput.style.display = 'none';
+            }
+            updatePreview();
+        });
+
+        // Обработка ввода текста
+        document.getElementById('taskTitle').addEventListener('input', updatePreview);
+        document.getElementById('taskDescription').addEventListener('input', updatePreview);
+
+        function updatePreview() {
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const selectedType = document.querySelector('.task-type.selected');
+            const selectedAssignee = document.querySelector('.assignee-option.selected');
+            const selectedDifficulty = document.querySelector('.difficulty-option.selected');
+            const selectedRecurring = document.querySelector('.recurring-option.selected');
+            const selectedRewards = document.querySelectorAll('.reward-option.selected');
+
+            if (!title) {
+                document.getElementById('taskPreview').style.display = 'none';
+                return;
+            }
+
+            const preview = document.getElementById('taskPreview');
+            const content = document.getElementById('previewContent');
+
+            let difficultyStars = '⭐ 5';
+            if (selectedDifficulty) {
+                const difficulty = selectedDifficulty.dataset.difficulty;
+                difficultyStars = difficulty === 'easy' ? '⭐ 5' : 
+                                difficulty === 'medium' ? '⭐ 10' : '⭐ 20';
+            }
+
+            let assigneeText = 'Не назначено';
+            if (selectedAssignee) {
+                const assignee = selectedAssignee.dataset.assignee;
+                assigneeText = assignee === 'anna' ? '👧 Аня' :
+                              assignee === 'max' ? '👦 Максим' :
+                              assignee === 'parent' ? '👨‍💼 Родители' :
+                              assignee === 'all' ? '👨‍👩‍👧‍👦 Вся семья' : 'Не назначено';
+            }
+
+            content.innerHTML = `
+                <div class="flex justify-between items-center" style="margin-bottom: var(--spacing-xs);">
+                    <h4 class="heading-4">${title}</h4>
+                    <span class="badge badge-success">Новая</span>
+                </div>
+                ${description ? `<p class="text-secondary" style="margin-bottom: var(--spacing-xs);">${description}</p>` : ''}
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-muted">${assigneeText}</span>
+                    <div class="points-display">${difficultyStars}</div>
+                </div>
+            `;
+
+            preview.style.display = 'block';
+        }
+
+        function goBack() {
+            if (confirm('🌱 Вы уверены, что хотите отменить создание задачи?\n\nВсе введенные данные будут потеряны.')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Обработка отправки формы
+        document.getElementById('taskForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('taskTitle').value;
+            const selectedAssignee = document.querySelector('.assignee-option.selected');
+            const selectedDifficulty = document.querySelector('.difficulty-option.selected');
+
+            if (!title) {
+                alert('🌱 Пожалуйста, введите название задачи!');
+                return;
+            }
+
+            if (!selectedAssignee) {
+                alert('🌱 Пожалуйста, выберите, кому назначить задачу!');
+                return;
+            }
+
+            if (!selectedDifficulty) {
+                alert('🌱 Пожалуйста, выберите сложность задачи!');
+                return;
+            }
+
+            // Анимация успеха
+            const button = e.target.querySelector('button[type="submit"]');
+            button.textContent = '✅ Задача создана!';
+            button.classList.remove('btn-primary');
+            button.classList.add('btn-reward');
+
+            setTimeout(() => {
+                alert('🎉 Отлично! Задача создана!\n\n⭐ Вы получили +10 звезд за создание задачи!\n\n🌱 Хабит и Хабби уже добавили её в список дел!');
+                window.location.href = 'index.html';
+            }, 1500);
+        });
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            // Выбираем первые опции по умолчанию
+            document.querySelector('.task-type[data-type="personal"]').classList.add('selected');
+            document.querySelector('.difficulty-option[data-difficulty="easy"]').classList.add('selected');
+            document.querySelector('.recurring-option[data-recurring="daily"]').classList.add('selected');
+        });
+    </script>
+</body>
+</html>

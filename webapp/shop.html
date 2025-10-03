@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Habits - Магазин наград</title>
+    <link rel="stylesheet" href="design-system.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Telegram WebApp API -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="telegram-webapp.js"></script>
+    
+    <style>
+        .shop-hero {
+            text-align: center;
+            padding: var(--spacing-lg) 0;
+            background: linear-gradient(135deg, rgba(168, 201, 138, 0.1) 0%, rgba(184, 216, 186, 0.1) 100%);
+            border-radius: var(--border-radius-xl);
+            margin-bottom: var(--spacing-lg);
+            border: 1px solid rgba(168, 201, 138, 0.3);
+        }
+        
+        .currency-display {
+            background: var(--gradient-reward);
+            color: var(--text-primary);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            margin: var(--spacing-md) 0;
+            border: 2px solid var(--accent-green);
+            box-shadow: var(--glow-green);
+        }
+        
+        .shop-categories {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin: var(--spacing-md) 0;
+            overflow-x: auto;
+            padding-bottom: var(--spacing-xs);
+        }
+        
+        .category-tab {
+            background: var(--bg-elevated);
+            border: 2px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-sm) var(--spacing-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold);
+        }
+        
+        .category-tab:hover {
+            border-color: var(--primary-green);
+        }
+        
+        .category-tab.active {
+            border-color: var(--primary-green);
+            background: rgba(107, 142, 78, 0.1);
+            color: var(--primary-green);
+        }
+        
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .reward-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .reward-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-elevated);
+            border-color: var(--primary-green);
+        }
+        
+        .reward-card.premium {
+            border: 2px solid var(--accent-green);
+            background: linear-gradient(135deg, rgba(123, 160, 91, 0.1) 0%, rgba(168, 201, 138, 0.1) 100%);
+        }
+        
+        .reward-card.premium::before {
+            content: '⭐';
+            position: absolute;
+            top: var(--spacing-xs);
+            right: var(--spacing-xs);
+            background: var(--accent-green);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-xs);
+        }
+        
+        .reward-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto var(--spacing-sm);
+            border: 2px solid var(--primary-green);
+        }
+        
+        .reward-title {
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+            font-size: var(--text-sm);
+        }
+        
+        .reward-description {
+            color: var(--text-muted);
+            font-size: var(--text-xs);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.4;
+        }
+        
+        .reward-price {
+            background: var(--primary-green);
+            color: white;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-lg);
+            font-weight: var(--font-bold);
+            font-size: var(--text-sm);
+            display: inline-block;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .buy-button {
+            width: 100%;
+            padding: var(--spacing-xs);
+            border: none;
+            border-radius: var(--border-radius);
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: var(--font-semibold);
+            font-size: var(--text-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .buy-button:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--glow-green);
+        }
+        
+        .buy-button:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .purchased-rewards {
+            background: rgba(123, 160, 91, 0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .purchased-item {
+            background: var(--bg-card);
+            border: 1px solid rgba(107, 142, 78, 0.2);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-sm);
+            margin: var(--spacing-xs) 0;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .purchased-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .mascot-shopkeeper {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: var(--gradient-reward);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-lg);
+            margin: var(--spacing-md) 0;
+            border: 2px solid var(--accent-green);
+        }
+        
+        .special-offers {
+            background: linear-gradient(135deg, rgba(184, 216, 186, 0.2) 0%, rgba(168, 201, 138, 0.2) 100%);
+            border: 2px solid var(--mint-green);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+            position: relative;
+        }
+        
+        .special-offers::before {
+            content: '🎉 АКЦИЯ!';
+            position: absolute;
+            top: -10px;
+            left: var(--spacing-md);
+            background: var(--accent-green);
+            color: white;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius);
+            font-size: var(--text-xs);
+            font-weight: var(--font-bold);
+        }
+        
+        .family-rewards {
+            background: rgba(156, 175, 136, 0.1);
+            border: 1px solid var(--sage-green);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .loading-shimmer {
+            background: linear-gradient(90deg, rgba(107, 142, 78, 0.1) 0%, rgba(107, 142, 78, 0.3) 50%, rgba(107, 142, 78, 0.1) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Герои-продавцы -->
+        <div class="shop-hero">
+            <div class="mascot-container">
+                <div class="mascot">🛍️</div>
+                <div class="mascot mascot-punk">💎</div>
+            </div>
+            <h1 class="heading-1 text-neon">Магазин наград</h1>
+            <p class="text-secondary">Хабит и Хабби открыли волшебный магазин для вашей семьи!</p>
+        </div>
+
+        <!-- Баланс звезд -->
+        <div class="currency-display">
+            <h2 class="heading-2" style="margin-bottom: var(--spacing-xs);">💰 Ваш баланс</h2>
+            <div style="font-size: var(--text-2xl); font-weight: var(--font-extrabold);">
+                ⭐ 150 звезд
+            </div>
+            <p class="text-sm">Заработано за последнюю неделю: +45 ⭐</p>
+        </div>
+
+        <!-- Совет от продавца -->
+        <div class="mascot-shopkeeper">
+            <div class="mascot-small">🛒</div>
+            <div>
+                <strong>Хабит-продавец:</strong> "Добро пожаловать в наш магазин! Сегодня особые скидки на семейные развлечения! 🎊"
+            </div>
+        </div>
+
+        <!-- Категории -->
+        <div class="shop-categories">
+            <div class="category-tab active" data-category="all">🌟 Все</div>
+            <div class="category-tab" data-category="privileges">🎫 Привилегии</div>
+            <div class="category-tab" data-category="treats">🍭 Лакомства</div>
+            <div class="category-tab" data-category="activities">🎮 Развлечения</div>
+            <div class="category-tab" data-category="family">👨‍👩‍👧‍👦 Семейные</div>
+            <div class="category-tab" data-category="special">✨ Особые</div>
+        </div>
+
+        <!-- Специальные предложения -->
+        <div class="special-offers">
+            <h3 class="heading-3" style="margin-top: var(--spacing-sm);">🎉 Специальные предложения</h3>
+            <div class="shop-grid">
+                <div class="reward-card premium">
+                    <div class="reward-icon">🎬</div>
+                    <div class="reward-title">Семейный киновечер</div>
+                    <div class="reward-description">Выберите фильм для всей семьи + попкорн</div>
+                    <div class="reward-price">🏷️ 80 ⭐ <s style="opacity: 0.6;">100 ⭐</s></div>
+                    <button class="buy-button">Купить со скидкой!</button>
+                </div>
+                
+                <div class="reward-card premium">
+                    <div class="reward-icon">🍕</div>
+                    <div class="reward-title">Пицца-пати</div>
+                    <div class="reward-description">Заказ любимой пиццы на всю семью</div>
+                    <div class="reward-price">🏷️ 120 ⭐ <s style="opacity: 0.6;">150 ⭐</s></div>
+                    <button class="buy-button" disabled>Нужно больше звезд</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основной магазин -->
+        <section id="shopItems">
+            <h2 class="heading-2">🛒 Товары магазина</h2>
+            
+            <!-- Привилегии -->
+            <div class="shop-grid" data-category="privileges">
+                <div class="reward-card">
+                    <div class="reward-icon">📺</div>
+                    <div class="reward-title">+30 минут ТВ</div>
+                    <div class="reward-description">Дополнительные полчаса любимых мультиков</div>
+                    <div class="reward-price">25 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+                
+                <div class="reward-card">
+                    <div class="reward-icon">🛏️</div>
+                    <div class="reward-title">Поздно лечь спать</div>
+                    <div class="reward-description">Лечь спать на 1 час позже в выходные</div>
+                    <div class="reward-price">35 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+                
+                <div class="reward-card">
+                    <div class="reward-icon">🎮</div>
+                    <div class="reward-title">Игровое время</div>
+                    <div class="reward-description">1 час дополнительных игр на планшете</div>
+                    <div class="reward-price">40 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+                
+                <div class="reward-card">
+                    <div class="reward-icon">🚫</div>
+                    <div class="reward-title">Пропуск дела</div>
+                    <div class="reward-description">Пропустить одну неважную задачу</div>
+                    <div class="reward-price">50 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+            </div>
+
+            <!-- Лакомства -->
+            <div class="shop-grid" data-category="treats" style="display: none;">
+                <div class="reward-card">
+                    <div class="reward-icon">🍦</div>
+                    <div class="reward-title">Мороженое</div>
+                    <div class="reward-description">Любимое мороженое на выбор</div>
+                    <div class="reward-price">15 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+                
+                <div class="reward-card">
+                    <div class="reward-icon">🍪</div>
+                    <div class="reward-title">Домашние печенья</div>
+                    <div class="reward-description">Мама испечет любимые печенья</div>
+                    <div class="reward-price">20 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+                
+                <div class="reward-card">
+                    <div class="reward-icon">🧁</div>
+                    <div class="reward-title">Кексик</div>
+                    <div class="reward-description">Сладкий кексик с кремом</div>
+                    <div class="reward-price">12 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+                
+                <div class="reward-card">
+                    <div class="reward-icon">🍫</div>
+                    <div class="reward-title">Шоколадка</div>
+                    <div class="reward-description">Плитка любимого шоколада</div>
+                    <div class="reward-price">18 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+            </div>
+
+            <!-- Развлечения -->
+            <div class="shop-grid" data-category="activities" style="display: none;">
+                <div class="reward-card">
+                    <div class="reward-icon">🎨</div>
+                    <div class="reward-title">Набор для рисования</div>
+                    <div class="reward-description">Новые краски и кисточки</div>
+                    <div class="reward-price">45 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+                
+                <div class="reward-card">
+                    <div class="reward-icon">🧩</div>
+                    <div class="reward-title">Новый пазл</div>
+                    <div class="reward-description">Интересный пазл на 100 деталей</div>
+                    <div class="reward-price">60 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+                
+                <div class="reward-card">
+                    <div class="reward-icon">📚</div>
+                    <div class="reward-title">Новая книга</div>
+                    <div class="reward-description">Книга по выбору ребенка</div>
+                    <div class="reward-price">55 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+                
+                <div class="reward-card">
+                    <div class="reward-icon">🎲</div>
+                    <div class="reward-title">Настольная игра</div>
+                    <div class="reward-description">Новая игра для всей семьи</div>
+                    <div class="reward-price">80 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+            </div>
+
+            <!-- Семейные награды -->
+            <div class="shop-grid" data-category="family" style="display: none;">
+                <div class="reward-card premium">
+                    <div class="reward-icon">🏞️</div>
+                    <div class="reward-title">Семейная прогулка</div>
+                    <div class="reward-description">Поход в парк или на природу всей семьей</div>
+                    <div class="reward-price">70 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+                
+                <div class="reward-card premium">
+                    <div class="reward-icon">🍽️</div>
+                    <div class="reward-title">Ресторан</div>
+                    <div class="reward-description">Поход в любимое кафе всей семьей</div>
+                    <div class="reward-price">120 ⭐</div>
+                    <button class="buy-button">Купить</button>
+                </div>
+                
+                <div class="reward-card premium">
+                    <div class="reward-icon">🎪</div>
+                    <div class="reward-title">Развлечения</div>
+                    <div class="reward-description">Цирк, театр или детский центр</div>
+                    <div class="reward-price">150 ⭐</div>
+                    <button class="buy-button" disabled>Нужно больше звезд</button>
+                </div>
+                
+                <div class="reward-card premium">
+                    <div class="reward-icon">🏖️</div>
+                    <div class="reward-title">Семейный выходной</div>
+                    <div class="reward-description">Целый день развлечений для всей семьи</div>
+                    <div class="reward-price">200 ⭐</div>
+                    <button class="buy-button" disabled>Нужно больше звезд</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Купленные награды -->
+        <div class="purchased-rewards">
+            <h3 class="heading-3">🎁 Ваши покупки</h3>
+            <p class="text-secondary">Награды, которые вы уже приобрели:</p>
+            
+            <div class="purchased-item">
+                <div class="purchased-icon">📺</div>
+                <div>
+                    <strong>+30 минут ТВ</strong>
+                    <div class="text-xs text-muted">Куплено 2 дня назад • Использовано</div>
+                </div>
+            </div>
+            
+            <div class="purchased-item">
+                <div class="purchased-icon">🍦</div>
+                <div>
+                    <strong>Мороженое</strong>
+                    <div class="text-xs text-muted">Куплено вчера • Готово к использованию</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Семейные достижения -->
+        <div class="family-rewards">
+            <h3 class="heading-3">🏆 Семейные достижения</h3>
+            <p class="text-secondary">Особые награды за совместные успехи:</p>
+            
+            <div class="shop-grid">
+                <div class="reward-card premium">
+                    <div class="reward-icon">🎖️</div>
+                    <div class="reward-title">Неделя побед</div>
+                    <div class="reward-description">Вся семья выполняла задачи 7 дней подряд</div>
+                    <div class="reward-price">Бесплатно!</div>
+                    <button class="buy-button" style="background: var(--success);">Получить награду!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Навигация -->
+        <div class="flex gap-sm" style="margin-top: var(--spacing-xl);">
+            <button class="btn btn-ghost" onclick="goBack()">
+                ⬅️ Назад
+            </button>
+            <button class="btn btn-secondary" onclick="viewPurchases()">
+                🎁 Мои покупки
+            </button>
+        </div>
+
+        <!-- Поощрение от талисманов -->
+        <div class="text-center" style="margin: var(--spacing-xl) 0;">
+            <div class="mascot-container">
+                <div class="mascot">💸</div>
+                <div class="mascot mascot-punk">🛍️</div>
+            </div>
+            <p class="text-muted">Хабит и Хабби всегда добавляют новые товары!</p>
+            <p class="text-neon text-gaming">Shop Smart, Grow Strong!</p>
+        </div>
+    </div>
+
+    <script>
+        const userStars = 150;
+
+        // Переключение категорий
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const category = tab.dataset.category;
+                showCategory(category);
+            });
+        });
+
+        function showCategory(category) {
+            const grids = document.querySelectorAll('.shop-grid[data-category]');
+            
+            grids.forEach(grid => {
+                if (category === 'all') {
+                    grid.style.display = 'grid';
+                } else {
+                    grid.style.display = grid.dataset.category === category ? 'grid' : 'none';
+                }
+            });
+        }
+
+        // Покупка товара
+        document.querySelectorAll('.buy-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const card = e.target.closest('.reward-card');
+                const title = card.querySelector('.reward-title').textContent;
+                const priceText = card.querySelector('.reward-price').textContent;
+                const price = parseInt(priceText.match(/\d+/)[0]);
+
+                if (button.disabled) {
+                    return;
+                }
+
+                if (priceText.includes('Бесплатно')) {
+                    purchaseItem(card, title, 0, button);
+                } else if (userStars >= price) {
+                    if (confirm(`🛒 Купить "${title}" за ${price} ⭐?\n\nУ вас останется ${userStars - price} звезд.`)) {
+                        purchaseItem(card, title, price, button);
+                    }
+                } else {
+                    alert(`🌱 Недостаточно звезд для покупки "${title}"!\n\nНужно: ${price} ⭐\nУ вас: ${userStars} ⭐\n\nВыполняйте больше задач, чтобы заработать звезды! 💪`);
+                }
+            });
+        });
+
+        function purchaseItem(card, title, price, button) {
+            // Анимация покупки
+            button.textContent = '✅ Куплено!';
+            button.style.background = '#7BA05B';
+            button.disabled = true;
+            
+            card.style.animation = 'star-burst 0.6s ease-out';
+            
+            // Создаем эффект звездочек
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    createStar(card);
+                }, i * 100);
+            }
+
+            setTimeout(() => {
+                if (price === 0) {
+                    alert(`🎉 Поздравляем!\n\nВы получили "${title}" бесплатно за семейные достижения!\n\n🌟 Хабит и Хабби гордятся вами!`);
+                } else {
+                    alert(`🎉 Покупка успешна!\n\n🛍️ Вы купили: "${title}"\n💰 Потрачено: ${price} ⭐\n💳 Остаток: ${userStars - price} ⭐\n\n🎁 Награда добавлена в ваш инвентарь!`);
+                }
+            }, 1000);
+        }
+
+        function createStar(element) {
+            const star = document.createElement('div');
+            star.textContent = '⭐';
+            star.style.position = 'absolute';
+            star.style.fontSize = '16px';
+            star.style.pointerEvents = 'none';
+            star.style.zIndex = '1000';
+            star.style.animation = 'star-burst 1.5s ease-out forwards';
+            
+            const rect = element.getBoundingClientRect();
+            star.style.left = rect.left + Math.random() * rect.width + 'px';
+            star.style.top = rect.top + Math.random() * rect.height + 'px';
+            
+            document.body.appendChild(star);
+            
+            setTimeout(() => {
+                star.remove();
+            }, 1500);
+        }
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        function viewPurchases() {
+            alert('🎁 Функция "Мои покупки" скоро появится!\n\nВ полной версии здесь будет список всех ваших покупок и активных наград.');
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            // Показываем все категории по умолчанию
+            showCategory('all');
+            
+            // Проверяем доступность покупок
+            document.querySelectorAll('.buy-button').forEach(button => {
+                const card = button.closest('.reward-card');
+                const priceText = card.querySelector('.reward-price').textContent;
+                
+                if (!priceText.includes('Бесплатно')) {
+                    const price = parseInt(priceText.match(/\d+/)[0]);
+                    if (userStars < price) {
+                        button.disabled = true;
+                        button.textContent = 'Нужно больше звезд';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

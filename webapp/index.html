@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Habits - Главная</title>
+    <link rel="stylesheet" href="design-system.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Telegram WebApp API -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="telegram-webapp.js"></script>
+    
+    <style>
+        .hero-section {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+            background: linear-gradient(135deg, rgba(107, 142, 78, 0.1) 0%, rgba(123, 160, 91, 0.1) 100%);
+            border-radius: var(--border-radius-xl);
+            margin-bottom: var(--spacing-xl);
+            border: 1px solid rgba(107, 142, 78, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.8);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            border: 1px solid rgba(107, 142, 78, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-green);
+            box-shadow: var(--glow-green);
+        }
+        
+        .stat-number {
+            font-size: var(--text-xl);
+            font-weight: var(--font-extrabold);
+            font-family: var(--font-gaming);
+            color: var(--primary-green);
+            text-shadow: var(--glow-green);
+        }
+        
+        .tasks-section {
+            margin: var(--spacing-xl) 0;
+        }
+        
+        .task-item {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(107, 142, 78, 0.2);
+            border-left: 2px solid var(--primary-green);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .task-item:hover {
+            transform: translateX(4px);
+            border-left-color: var(--accent-green);
+            box-shadow: var(--shadow-card);
+        }
+        
+        .task-completed {
+            border-left-color: var(--soft-green);
+            background: rgba(168, 201, 138, 0.1);
+            opacity: 0.8;
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--spacing-sm);
+        }
+        
+        .floating-action {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            border: 2px solid var(--primary-green);
+            box-shadow: var(--glow-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .floating-action:hover {
+            transform: scale(1.1);
+            box-shadow: var(--glow-green), 0 8px 32px rgba(107, 142, 78, 0.4);
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-sm);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .reward-banner {
+            background: var(--gradient-reward);
+            color: var(--text-primary);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            margin: var(--spacing-lg) 0;
+            border: 2px solid var(--accent-green);
+            animation: pulse-neon 3s infinite;
+        }
+        
+        .family-section {
+            background: rgba(156, 175, 136, 0.1);
+            border: 1px solid var(--sage-green);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .family-member {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .member-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 2px solid var(--sage-green);
+        }
+        
+        .member-stats {
+            flex: 1;
+        }
+        
+        .member-progress {
+            margin-top: var(--spacing-xs);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Главная секция -->
+        <div class="hero-section">
+            <div class="family-avatar animate-float" style="margin: 0 auto var(--spacing-sm);">
+                👨‍👩‍👧‍👦
+            </div>
+            <h1 class="heading-1 text-neon">Семья Петровых</h1>
+            <p class="text-secondary">Сегодня отличный день для новых привычек!</p>
+            
+            <!-- Статистика -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">7</div>
+                    <div class="text-sm text-secondary">День подряд</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">150</div>
+                    <div class="text-sm text-secondary">Звезд</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">85%</div>
+                    <div class="text-sm text-secondary">Прогресс</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Награда дня -->
+        <div class="reward-banner">
+            <h3 class="heading-3">🎉 Поздравляем!</h3>
+            <p>Семья выполнила все задачи вчера! Получайте бонус +20 звезд!</p>
+            <button class="btn btn-ghost" style="margin-top: var(--spacing-sm);">
+                Забрать награду
+            </button>
+        </div>
+
+        <!-- Быстрые действия -->
+        <section>
+            <h2 class="heading-2">⚡ Быстрые действия</h2>
+            <div class="quick-actions">
+                <button class="btn btn-primary">
+                    ➕ Новая задача
+                </button>
+                <button class="btn btn-secondary">
+                    🛍️ Магазин наград
+                </button>
+            </div>
+        </section>
+
+        <!-- Сегодняшние задачи -->
+        <section class="tasks-section">
+            <h2 class="heading-2">📋 Сегодняшние задачи</h2>
+            
+            <div class="task-item">
+                <div class="task-header">
+                    <h4 class="heading-4">Почистить зубы утром</h4>
+                    <span class="badge badge-success">Готово</span>
+                </div>
+                <p class="text-secondary">Аня выполнила в 08:30</p>
+                <div class="task-meta">
+                    <span class="text-sm text-muted">👧 Аня</span>
+                    <div class="points-display">⭐ 5</div>
+                </div>
+            </div>
+
+            <div class="task-item">
+                <div class="task-header">
+                    <h4 class="heading-4">Убрать игрушки</h4>
+                    <span class="badge badge-warning">В процессе</span>
+                </div>
+                <p class="text-secondary">Осталось 15 минут</p>
+                <div class="task-meta">
+                    <span class="text-sm text-muted">👦 Максим</span>
+                    <button class="btn btn-secondary btn-small">Помочь</button>
+                </div>
+            </div>
+
+            <div class="task-item">
+                <div class="task-header">
+                    <h4 class="heading-4">Семейный ужин</h4>
+                    <span class="badge badge-purple">Семейная</span>
+                </div>
+                <p class="text-secondary">Всей семьей в 19:00</p>
+                <div class="task-meta">
+                    <span class="text-sm text-muted">👨‍👩‍👧‍👦 Все</span>
+                    <div class="points-display">⭐ 20</div>
+                </div>
+            </div>
+
+            <div class="task-item">
+                <div class="task-header">
+                    <h4 class="heading-4">Почитать перед сном</h4>
+                    <span class="badge badge-info">Запланировано</span>
+                </div>
+                <p class="text-secondary">20:30 - 21:00</p>
+                <div class="task-meta">
+                    <span class="text-sm text-muted">👧 Аня</span>
+                    <div class="points-display">⭐ 10</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Прогресс семьи -->
+        <section class="family-section">
+            <h2 class="heading-2">👨‍👩‍👧‍👦 Прогресс семьи</h2>
+            
+            <div class="family-member">
+                <div class="member-avatar">👨‍💼</div>
+                <div class="member-stats">
+                    <h4 class="heading-4">Папа</h4>
+                    <div class="member-progress">
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 90%;"></div>
+                        </div>
+                        <p class="text-xs text-secondary">9/10 задач выполнено</p>
+                    </div>
+                </div>
+                <div class="points-display">⭐ 45</div>
+            </div>
+
+            <div class="family-member">
+                <div class="member-avatar">👩‍🎓</div>
+                <div class="member-stats">
+                    <h4 class="heading-4">Мама</h4>
+                    <div class="member-progress">
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 100%; background: var(--gradient-reward);"></div>
+                        </div>
+                        <p class="text-xs text-secondary">8/8 задач выполнено</p>
+                    </div>
+                </div>
+                <div class="points-display">⭐ 40</div>
+            </div>
+
+            <div class="family-member">
+                <div class="member-avatar" style="background: var(--gradient-secondary); border-color: var(--neon-purple);">👧</div>
+                <div class="member-stats">
+                    <h4 class="heading-4">Аня (8 лет)</h4>
+                    <div class="member-progress">
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 75%;"></div>
+                        </div>
+                        <p class="text-xs text-secondary">3/4 задач выполнено</p>
+                    </div>
+                </div>
+                <div class="points-display">⭐ 25</div>
+            </div>
+
+            <div class="family-member">
+                <div class="member-avatar" style="background: var(--gradient-secondary); border-color: var(--neon-purple);">👦</div>
+                <div class="member-stats">
+                    <h4 class="heading-4">Максим (6 лет)</h4>
+                    <div class="member-progress">
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 50%;"></div>
+                        </div>
+                        <p class="text-xs text-secondary">2/4 задач выполнено</p>
+                    </div>
+                </div>
+                <div class="points-display">⭐ 15</div>
+            </div>
+        </section>
+
+        <!-- Достижения -->
+        <section>
+            <h2 class="heading-2">🏆 Недавние достижения</h2>
+            <div class="card card-reward">
+                <div class="flex items-center gap-md">
+                    <div style="font-size: 3rem;">🌟</div>
+                    <div>
+                        <h4 class="heading-4">Чемпион недели!</h4>
+                        <p class="text-secondary">Аня выполнила все задачи 7 дней подряд</p>
+                    </div>
+                    <div class="points-display animate-star-burst">⭐ 50</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Общий прогресс -->
+        <section style="margin: var(--spacing-2xl) 0;">
+            <h2 class="heading-2">📈 Общий прогресс</h2>
+            <div class="card neon-border">
+                <h4 class="heading-4 text-neon">Ежедневная цель</h4>
+                <div class="progress-container" style="margin: var(--spacing-md) 0;">
+                    <div class="progress-bar" style="width: 78%;"></div>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-secondary">14 из 18 задач</span>
+                    <span class="text-neon">78%</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Плавающая кнопка -->
+        <div class="floating-action" onclick="showNewTaskModal()">
+            ➕
+        </div>
+
+        <!-- Футер -->
+        <div class="text-center" style="margin: var(--spacing-xl) 0; padding-bottom: 80px;">
+            <p class="text-muted">Продолжайте в том же духе! 🚀</p>
+            <p class="text-neon text-gaming">Level Up Your Family!</p>
+        </div>
+    </div>
+
+    <script>
+        function showNewTaskModal() {
+            alert('🎯 Создание новой задачи!\n\nВ полной версии здесь откроется форма для создания задачи.');
+        }
+
+        // Анимация прогресс-баров при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach((bar, index) => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500 + index * 200);
+            });
+        });
+
+        // Интерактивность карточек задач
+        document.querySelectorAll('.task-item').forEach(task => {
+            task.addEventListener('click', () => {
+                task.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    task.style.transform = 'translateX(8px)';
+                }, 150);
+            });
+        });
+
+        // Эффект при наведении на статистику
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const number = card.querySelector('.stat-number');
+                number.style.animation = 'glow-rotate 1s ease-in-out';
+                setTimeout(() => {
+                    number.style.animation = '';
+                }, 1000);
+            });
+        });
+
+        // Анимация плавающей кнопки
+        setInterval(() => {
+            const fab = document.querySelector('.floating-action');
+            fab.style.animation = 'pulse-neon 2s ease-in-out';
+            setTimeout(() => {
+                fab.style.animation = '';
+            }, 2000);
+        }, 10000);
+    </script>
+</body>
+</html>

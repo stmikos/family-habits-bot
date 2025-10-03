@@ -1,0 +1,613 @@
+/* 
+Family Habit Bot - Modern Gaming Design System
+Вдохновлен современными игровыми приложениями с темной темой и неоновыми акцентами
+Адаптирован под семейную тематику с игровой эстетикой
+*/
+
+:root {
+  /* === ОСНОВНЫЕ ЦВЕТА === */
+  
+  /* Светлая зеленая основа - натуральная палитра */
+  --bg-primary: #F8FDF8;           /* Очень светлый зеленоватый белый */
+  --bg-secondary: #E8F5E8;         /* Светло-зеленый для карточек */
+  --bg-tertiary: #D4E6D4;          /* Мягкий зеленый для панелей */
+  --bg-card: #FFFFFF;              /* Белый фон карточек */
+  --bg-elevated: #F0F8F0;          /* Приподнятые элементы */
+  
+  /* Зеленые акценты - натуральная палитра */
+  --primary-green: #6B8E4E;        /* Основной оливково-зеленый */
+  --primary-green-light: #8BA968;  /* Светлый зеленый */
+  --primary-green-dark: #5A7A42;   /* Темный зеленый */
+  --accent-green: #7BA05B;         /* Акцентный зеленый */
+  --soft-green: #A8C98A;           /* Мягкий зеленый */
+  --mint-green: #B8D8BA;           /* Мятный зеленый */
+  --sage-green: #9CAF88;           /* Шалфейный зеленый */
+  --forest-green: #4A6741;         /* Лесной зеленый */
+  
+  /* Градиенты */
+  --gradient-primary: linear-gradient(135deg, #6B8E4E 0%, #8BA968 100%);
+  --gradient-secondary: linear-gradient(135deg, #7BA05B 0%, #A8C98A 100%);
+  --gradient-reward: linear-gradient(135deg, #8BA968 0%, #B8D8BA 100%);
+  --gradient-bg: linear-gradient(135deg, #F8FDF8 0%, #E8F5E8 100%);
+  
+  /* Текст */
+  --text-primary: #2D4A2D;         /* Темно-зеленый основной текст */
+  --text-secondary: #5A7A5A;       /* Серо-зеленый вторичный */
+  --text-muted: #8B9B8B;           /* Приглушенный зелено-серый */
+  --text-accent: #6B8E4E;          /* Зеленый для акцентов */
+  --text-light: #FFFFFF;           /* Белый для темных кнопок */
+  
+  /* Состояния и семантика */
+  --success: #7BA05B;              /* Успех - натуральный зеленый */
+  --warning: #C5A572;              /* Предупреждение - золотисто-коричневый */
+  --error: #C17B7B;                /* Ошибка - мягкий красный */
+  --info: #7BA8C7;                 /* Информация - мягкий голубой */
+  
+  /* === ТЕНИ И СВЕЧЕНИЯ === */
+  --shadow-soft: 0 2px 8px rgba(107, 142, 78, 0.1);
+  --shadow-card: 0 4px 16px rgba(107, 142, 78, 0.15);
+  --shadow-button: 0 4px 20px rgba(107, 142, 78, 0.2);
+  --shadow-elevated: 0 8px 32px rgba(107, 142, 78, 0.2);
+  
+  /* Мягкие свечения */
+  --glow-green: 0 0 20px rgba(107, 142, 78, 0.3), 0 0 40px rgba(107, 142, 78, 0.1);
+  --glow-soft: 0 0 20px rgba(139, 169, 104, 0.25), 0 0 40px rgba(139, 169, 104, 0.1);
+  --glow-accent: 0 0 20px rgba(123, 160, 91, 0.3), 0 0 40px rgba(123, 160, 91, 0.15);
+  
+  /* === РАЗМЕРЫ И ОТСТУПЫ === */
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 24px;
+  --spacing-3xl: 32px;
+  
+  /* Скругления */
+  --border-radius-sm: 4px;
+  --border-radius: 6px;
+  --border-radius-lg: 8px;
+  --border-radius-xl: 12px;
+  --border-radius-2xl: 16px;
+  
+  /* === ТИПОГРАФИКА === */
+  --font-heading: 'Quicksand', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', 'Roboto', system-ui, sans-serif;
+  --font-gaming: 'Orbitron', 'Inter', monospace;
+  
+  /* Размеры шрифтов */
+  --text-xs: 10px;
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 20px;
+  --text-3xl: 24px;
+  --text-4xl: 28px;
+  
+  /* Веса шрифтов */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+}
+
+/* === БАЗОВЫЕ СТИЛИ === */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--font-normal);
+  color: var(--text-primary);
+  background: var(--gradient-bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* === ТИПОГРАФИКА === */
+
+.heading-1 {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-extrabold);
+  color: var(--text-primary);
+  text-shadow: 0 0 10px rgba(107, 142, 78, 0.3);
+  margin-bottom: var(--spacing-md);
+}
+
+.heading-2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.heading-3 {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.heading-4 {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.text-neon {
+  color: var(--primary-green);
+  text-shadow: var(--glow-green);
+  font-weight: var(--font-bold);
+}
+
+.text-gaming {
+  font-family: var(--font-gaming);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* === КНОПКИ === */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: none;
+  border-radius: var(--border-radius-lg);
+  font-family: var(--font-heading);
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.btn:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover:before {
+  left: 100%;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: var(--text-light);
+  box-shadow: var(--shadow-button);
+  border: 1px solid var(--primary-green);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--glow-green);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--primary-green);
+  border: 2px solid var(--primary-green);
+  box-shadow: inset 0 0 20px rgba(107, 142, 78, 0.1);
+}
+
+.btn-secondary:hover {
+  background: rgba(107, 142, 78, 0.1);
+  box-shadow: var(--glow-green);
+}
+
+.btn-reward {
+  background: var(--gradient-reward);
+  color: var(--text-primary);
+  border: 1px solid var(--accent-green);
+}
+
+.btn-reward:hover {
+  box-shadow: 0 0 20px rgba(123, 160, 91, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--text-primary);
+  border: 1px solid rgba(107, 142, 78, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--primary-green);
+}
+
+.btn-large {
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--text-base);
+  border-radius: var(--border-radius-xl);
+}
+
+.btn-small {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--text-xs);
+  border-radius: var(--border-radius);
+}
+
+/* === КАРТОЧКИ === */
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid rgba(107, 142, 78, 0.2);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+}
+
+.card:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gradient-primary);
+  opacity: 0.5;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+  border-color: rgba(107, 142, 78, 0.4);
+}
+
+.card-glow {
+  box-shadow: var(--shadow-card), var(--glow-green);
+  border-color: var(--primary-green);
+}
+
+.card-task {
+  background: linear-gradient(135deg, rgba(107, 142, 78, 0.1) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-left: 2px solid var(--primary-green);
+}
+
+.card-reward {
+  background: linear-gradient(135deg, rgba(168, 201, 138, 0.1) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-left: 2px solid var(--soft-green);
+}
+
+.card-shop {
+  background: linear-gradient(135deg, rgba(123, 160, 91, 0.1) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-left: 2px solid var(--accent-green);
+}
+
+/* === ЗНАЧКИ (BADGES) === */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+}
+
+.badge-success {
+  background: rgba(123, 160, 91, 0.2);
+  color: var(--accent-green);
+  border-color: var(--accent-green);
+  box-shadow: inset 0 0 10px rgba(123, 160, 91, 0.2);
+}
+
+.badge-warning {
+  background: rgba(197, 165, 114, 0.2);
+  color: var(--warning);
+  border-color: var(--warning);
+  box-shadow: inset 0 0 10px rgba(197, 165, 114, 0.2);
+}
+
+.badge-info {
+  background: rgba(123, 168, 199, 0.2);
+  color: var(--info);
+  border-color: var(--info);
+  box-shadow: inset 0 0 10px rgba(123, 168, 199, 0.2);
+}
+
+.badge-purple {
+  background: rgba(156, 175, 136, 0.2);
+  color: var(--sage-green);
+  border-color: var(--sage-green);
+}
+
+/* === ПРОГРЕСС-БАРЫ === */
+
+.progress-container {
+  background: rgba(107, 142, 78, 0.1);
+  border-radius: var(--border-radius-lg);
+  padding: 2px;
+  border: 1px solid rgba(107, 142, 78, 0.2);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--gradient-primary);
+  border-radius: var(--border-radius);
+  transition: width 0.5s ease;
+  position: relative;
+  box-shadow: inset 0 0 10px rgba(107, 142, 78, 0.3);
+}
+
+.progress-bar:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* === ПАНЕЛИ И КОНТЕЙНЕРЫ === */
+
+.container {
+  max-width: 428px;
+  margin: 0 auto;
+  padding: var(--spacing-sm);
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(107, 142, 78, 0.2);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-md);
+  backdrop-filter: blur(20px);
+}
+
+.panel-neon {
+  border-color: var(--primary-green);
+  box-shadow: var(--glow-green);
+}
+
+/* === СПЕЦИАЛЬНЫЕ ЭФФЕКТЫ === */
+
+.neon-border {
+  border: 2px solid var(--primary-green);
+  box-shadow: inset 0 0 20px rgba(107, 142, 78, 0.2), 0 0 20px rgba(107, 142, 78, 0.3);
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(107, 142, 78, 0.3);
+}
+
+.points-display {
+  background: var(--gradient-reward);
+  color: var(--text-primary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-lg);
+  font-weight: var(--font-bold);
+  font-family: var(--font-gaming);
+  font-size: var(--text-xs);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid var(--accent-green);
+  box-shadow: 0 0 15px rgba(123, 160, 91, 0.3);
+}
+
+/* === АНИМАЦИИ === */
+
+@keyframes pulse-neon {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(107, 142, 78, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(107, 142, 78, 0.5), 0 0 40px rgba(107, 142, 78, 0.3);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow-rotate {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+@keyframes star-burst {
+  0% { 
+    transform: scale(0) rotate(0deg); 
+    opacity: 0;
+  }
+  50% { 
+    transform: scale(1.2) rotate(180deg); 
+    opacity: 1;
+  }
+  100% { 
+    transform: scale(1) rotate(360deg); 
+    opacity: 1;
+  }
+}
+
+.animate-pulse-neon {
+  animation: pulse-neon 2s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-glow-rotate {
+  animation: glow-rotate 4s linear infinite;
+}
+
+.animate-star-burst {
+  animation: star-burst 0.6s ease-out;
+}
+
+/* === УТИЛИТЫ === */
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-sm {
+  gap: var(--spacing-sm);
+}
+
+.gap-md {
+  gap: var(--spacing-md);
+}
+
+.gap-lg {
+  gap: var(--spacing-lg);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.rounded {
+  border-radius: var(--border-radius);
+}
+
+.rounded-lg {
+  border-radius: var(--border-radius-lg);
+}
+
+.rounded-xl {
+  border-radius: var(--border-radius-xl);
+}
+
+.shadow {
+  box-shadow: var(--shadow-soft);
+}
+
+.shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+.shadow-glow {
+  box-shadow: var(--glow-green);
+}
+
+/* === АДАПТИВНОСТЬ === */
+
+@media (max-width: 375px) {
+  .container {
+    padding: var(--spacing-xs);
+  }
+  
+  .heading-1 {
+    font-size: var(--text-2xl);
+  }
+  
+  .heading-2 {
+    font-size: var(--text-xl);
+  }
+  
+  .btn-large {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--text-sm);
+  }
+}
+
+/* === ПЕРСОНАЛИЗАЦИЯ СЕМЕЙНОЙ ТЕМАТИКИ === */
+
+.family-avatar {
+  width: 48px;
+  height: 48px;
+  background: var(--gradient-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border: 2px solid var(--primary-green);
+  box-shadow: var(--glow-green);
+  position: relative;
+}
+
+.child-avatar {
+  background: var(--gradient-secondary);
+  border-color: var(--sage-green);
+  box-shadow: var(--glow-soft);
+}
+
+.task-status-new {
+  color: var(--primary-green);
+  text-shadow: var(--glow-green);
+}
+
+.task-status-progress {
+  color: var(--accent-green);
+  text-shadow: var(--glow-soft);
+}
+
+.task-status-done {
+  color: var(--soft-green);
+}
+
+.reward-sparkle {
+  color: var(--accent-green);
+  animation: glow-rotate 2s infinite;
+}
