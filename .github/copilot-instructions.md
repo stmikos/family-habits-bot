@@ -27,99 +27,7 @@
 ## 1) Каркас репозитория (вставить в корневой `COPILOT_BRIEF.md`)
 
 ```md
-# Family Habits Bot
-
-Telegram-бот для семейного трекинга привычек с веб-приложением.
-
-## Glossary
-- Parent — родитель/опекун, владелец семейного аккаунта
-- Child — ребёнок, исполнитель задач
-- Task — задание с дедлайном, типом ответа (text/photo/video)
-- Check-in — отметка выполнения задачи
-- Reward — награда за достижения/очки
-- Points — очки за выполнение (по умолчанию 5 за базовую задачу)
-
-## Стек технологий
-- Python 3.11
-- aiogram 3.x (Telegram Bot API)
-- FastAPI (REST API)
-- PostgreSQL + SQLAlchemy + Alembic
-- pydantic (валидация данных)
-- pytest (тестирование)
-- uvicorn (ASGI сервер)
-- loguru (логирование)
-
-## Архитектура
-
-```
-app/
-├── bot/          # Telegram-бот (aiogram)
-├── api/          # FastAPI REST API
-├── db/           # SQLAlchemy модели и миграции
-├── core/         # Конфигурация, логирование
-├── services/     # Бизнес-логика
-└── __init__.py
-
-tests/           # Тесты pytest
-docker/          # Docker конфигурация
-alembic/         # Миграции БД
-```
-
-## Быстрый старт
-
-1. Установка зависимостей:
-```bash
-pip install -r requirements.txt
-```
-
-2. Настройка окружения:
-```bash
-cp .env.example .env
-# Заполните переменные окружения
-```
-
-3. Запуск миграций:
-```bash
-alembic upgrade head
-```
-
-4. Запуск сервисов:
-```bash
-# API
-uvicorn app.api.main:app --reload
-
-# Bot
-python -m app.bot.main
-```
-
-## Разработка
-
-### Структура проекта
-- `app/bot/` — хендлеры Telegram-бота, FSM, меню
-- `app/api/` — эндпоинты FastAPI, схемы pydantic
-- `app/db/` — модели SQLAlchemy, сессии БД
-- `app/core/` — конфигурация, логирование, исключения
-- `app/services/` — доменная логика (задачи, очки, награды)
-- `tests/` — unit и интеграционные тесты
-
-### Правила кодирования
-- Обязательные type hints
-- Функции не более 40 строк
-- Докстринги для всех публичных функций
-- Тесты на каждую публичную функцию
-- Логирование через loguru
-
-### Тестирование
-```bash
-pytest                    # Все тесты
-pytest tests/unit/        # Unit тесты
-pytest tests/integration/ # Интеграционные тесты
-```
-
-## Деплой
-- Docker контейнеры
-- PostgreSQL БД
-- Настройка через переменные окружения
+# Family Habit — Tech Outline
 Стек: Python 3.11, aiogram 3.x, FastAPI, Postgres (SQLAlchemy), Alembic, pydantic, pytest, uvicorn, loguru.
 
 Модули:
@@ -1208,4 +1116,3 @@ POST /billing/subscribe → { status:"ok", plan:"pro", next_billing:"2025-11-03"
 * «Ещё один ребёнок? Подключи Pro — до 5 детей на семью.»
 * «Расширенные аватарки, питомцы и гардероб — только в Pro.»
 * «Полная статистика прогресса и heatmap — доступно в Pro.»
-
