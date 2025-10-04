@@ -39,7 +39,7 @@ static_dir = webapp_dir
 @app.get("/", response_class=HTMLResponse)
 async def root():
     """Главная страница - редирект на index.html"""
-    return FileResponse(static_dir / "index-simple.html")
+    return FileResponse(static_dir / "index.html")
 
 @app.get("/health")
 async def health_check():
@@ -64,7 +64,12 @@ async def index_page():
 @app.get("/registration.html", response_class=HTMLResponse)
 async def registration_page():
     """Страница регистрации семьи"""
-    return FileResponse(static_dir / "registration.html")
+    return FileResponse(static_dir / "registration-new.html")
+
+@app.get("/registration", response_class=HTMLResponse)
+async def registration_page_short():
+    """Страница регистрации семьи (короткий URL)"""
+    return FileResponse(static_dir / "registration-new.html")
 
 @app.get("/registration-children.html", response_class=HTMLResponse)
 async def registration_children_page():

@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Habits - Регистрация</title>
+    <link rel="stylesheet" href="design-system.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Telegram WebApp API -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="telegram-webapp.js"></script>
+    
+    <style>
+        body {
+            background: var(--gradient-hero);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .registration-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: var(--spacing-xl);
+            gap: var(--spacing-sm);
+        }
+
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: var(--primary-green);
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+        }
+
+        .step.completed {
+            background: var(--success-green);
+        }
+
+        .step-content {
+            background: rgba(255,255,255,0.95);
+            border-radius: var(--border-radius-xl);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--primary-green);
+        }
+
+        .step-title {
+            color: var(--primary-green);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 2px solid var(--border-light);
+            border-radius: var(--border-radius-lg);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
+        }
+
+        .form-input.error {
+            border-color: var(--error-red);
+            box-shadow: 0 0 10px rgba(244, 67, 54, 0.2);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 2px solid var(--border-light);
+            border-radius: var(--border-radius-lg);
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-size: 0.9em;
+            margin-top: var(--spacing-xs);
+            display: none;
+        }
+
+        .info-text {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid var(--primary-green);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            color: var(--text-dark);
+            font-size: 0.9em;
+        }
+
+        .mascot-helper {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .mascot-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+
+        .next-button {
+            width: 100%;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-lg);
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: var(--spacing-lg);
+        }
+
+        .next-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .next-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-button {
+            background: transparent;
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            cursor: pointer;
+            margin-right: var(--spacing-md);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 4px;
+        }
+
+        .checkbox-group label {
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .step-content.hidden {
+            display: none;
+        }
+
+        .telegram-info {
+            background: rgba(33, 150, 243, 0.1);
+            border: 1px solid #2196F3;
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .telegram-info h4 {
+            color: #1976D2;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: var(--spacing-lg);
+            margin: var(--spacing-md) 0;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        @media (max-width: 480px) {
+            .registration-container {
+                padding: var(--spacing-md);
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <!-- Индикатор шагов -->
+        <div class="step-indicator">
+            <div class="step active" id="step-1">1</div>
+            <div class="step" id="step-2">2</div>
+            <div class="step" id="step-3">3</div>
+            <div class="step" id="step-4">4</div>
+        </div>
+
+        <!-- Шаг 1: Данные пользователя -->
+        <div class="step-content" id="content-1">
+            <div class="mascot-helper">
+                <div class="mascot-avatar">🌱</div>
+                <div>
+                    <strong>Habit:</strong> Давайте начнем регистрацию! Сначала проверим ваши данные из Telegram.
+                </div>
+            </div>
+
+            <h2 class="step-title">📋 Ваши данные</h2>
+            
+            <div class="telegram-info">
+                <h4>📱 Данные из Telegram:</h4>
+                <div id="telegram-data">Загружаем...</div>
+            </div>
+
+            <div class="form-group">
+                <label for="user-name" class="form-label">Имя *</label>
+                <input type="text" id="user-name" class="form-input" placeholder="Введите ваше имя" minlength="3" required>
+                <div class="error-message" id="name-error">Имя должно содержать минимум 3 буквы</div>
+            </div>
+
+            <div class="form-group">
+                <label for="user-phone" class="form-label">Телефон *</label>
+                <input type="tel" id="user-phone" class="form-input" placeholder="+7 (999) 123-45-67" required>
+                <div class="error-message" id="phone-error">Введите корректный номер телефона</div>
+            </div>
+
+            <button class="next-button" onclick="nextStep(1)" disabled id="next-1">
+                Продолжить →
+            </button>
+        </div>
+
+        <!-- Шаг 2: Регион и часовой пояс -->
+        <div class="step-content hidden" id="content-2">
+            <div class="mascot-helper">
+                <div class="mascot-avatar">🍃</div>
+                <div>
+                    <strong>Habby:</strong> Теперь выберите ваш регион. Это нужно для точного определения времени и уведомлений о задачах!
+                </div>
+            </div>
+
+            <h2 class="step-title">🌍 Регион и часовой пояс</h2>
+            
+            <div class="info-text">
+                💡 <strong>Зачем нужен часовой пояс?</strong><br>
+                Мы будем отправлять напоминания о выполнении привычек в удобное для вас время и правильно отслеживать ежедневный прогресс.
+            </div>
+
+            <div class="form-group">
+                <label for="timezone" class="form-label">Выберите ваш регион *</label>
+                <select id="timezone" class="form-select" required>
+                    <option value="">Выберите регион...</option>
+                    <option value="Europe/Moscow">Москва, Санкт-Петербург (UTC+3)</option>
+                    <option value="Europe/Samara">Самара, Ижевск (UTC+4)</option>
+                    <option value="Asia/Yekaterinburg">Екатеринбург, Пермь (UTC+5)</option>
+                    <option value="Asia/Omsk">Омск (UTC+6)</option>
+                    <option value="Asia/Krasnoyarsk">Красноярск, Новосибирск (UTC+7)</option>
+                    <option value="Asia/Irkutsk">Иркутск, Улан-Удэ (UTC+8)</option>
+                    <option value="Asia/Yakutsk">Якутск (UTC+9)</option>
+                    <option value="Asia/Vladivostok">Владивосток, Хабаровск (UTC+10)</option>
+                    <option value="Asia/Magadan">Магадан (UTC+11)</option>
+                    <option value="Asia/Kamchatka">Петропавловск-Камчатский (UTC+12)</option>
+                </select>
+                <div class="error-message" id="timezone-error">Выберите ваш часовой пояс</div>
+            </div>
+
+            <div class="form-group">
+                <label for="city" class="form-label">Город *</label>
+                <input type="text" id="city" class="form-input" placeholder="Введите название города" pattern="[А-Яа-яЁё\s\-]+" required>
+                <div class="error-message" id="city-error">Название города должно содержать только буквы</div>
+            </div>
+
+            <div style="display: flex; gap: var(--spacing-md);">
+                <button class="back-button" onclick="prevStep(2)">← Назад</button>
+                <button class="next-button" onclick="nextStep(2)" disabled id="next-2" style="flex: 1;">
+                    Продолжить →
+                </button>
+            </div>
+        </div>
+
+        <!-- Шаг 3: Регистрация ребенка -->
+        <div class="step-content hidden" id="content-3">
+            <div class="mascot-helper">
+                <div class="mascot-avatar">🌱</div>
+                <div>
+                    <strong>Habit:</strong> Отлично! Теперь давайте зарегистрируем вашего ребенка в Family Habits.
+                </div>
+            </div>
+
+            <h2 class="step-title">👶 Регистрация ребенка</h2>
+
+            <div class="form-group">
+                <label for="child-name" class="form-label">Имя ребенка *</label>
+                <input type="text" id="child-name" class="form-input" placeholder="Введите имя ребенка" minlength="2" required>
+                <div class="error-message" id="child-name-error">Имя должно содержать минимум 2 буквы</div>
+            </div>
+
+            <div class="form-group">
+                <label for="child-age" class="form-label">Возраст *</label>
+                <select id="child-age" class="form-select" required>
+                    <option value="">Выберите возраст...</option>
+                    <option value="5">5 лет</option>
+                    <option value="6">6 лет</option>
+                    <option value="7">7 лет</option>
+                    <option value="8">8 лет</option>
+                    <option value="9">9 лет</option>
+                    <option value="10">10 лет</option>
+                    <option value="11">11 лет</option>
+                    <option value="12">12 лет</option>
+                    <option value="13">13 лет</option>
+                    <option value="14">14 лет</option>
+                    <option value="15">15 лет</option>
+                    <option value="16">16 лет</option>
+                </select>
+                <div class="error-message" id="child-age-error">Выберите возраст ребенка</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Пол *</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="gender-boy" name="child-gender" value="boy" required>
+                        <label for="gender-boy">👦 Мальчик</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="gender-girl" name="child-gender" value="girl" required>
+                        <label for="gender-girl">👧 Девочка</label>
+                    </div>
+                </div>
+                <div class="error-message" id="gender-error">Выберите пол ребенка</div>
+            </div>
+
+            <div style="display: flex; gap: var(--spacing-md);">
+                <button class="back-button" onclick="prevStep(3)">← Назад</button>
+                <button class="next-button" onclick="nextStep(3)" disabled id="next-3" style="flex: 1;">
+                    Продолжить →
+                </button>
+            </div>
+        </div>
+
+        <!-- Шаг 4: Политика конфиденциальности -->
+        <div class="step-content hidden" id="content-4">
+            <div class="mascot-helper">
+                <div class="mascot-avatar">🍃</div>
+                <div>
+                    <strong>Habby:</strong> Последний шаг! Ознакомьтесь с политикой конфиденциальности.
+                </div>
+            </div>
+
+            <h2 class="step-title">🔒 Политика конфиденциальности</h2>
+
+            <div class="info-text">
+                <h4>Мы гарантируем:</h4>
+                <ul>
+                    <li>🔐 Безопасное хранение данных вашей семьи</li>
+                    <li>🚫 Никогда не передадим данные третьим лицам</li>
+                    <li>👨‍👩‍👧‍👦 Данные используются только для работы приложения</li>
+                    <li>🗑️ Возможность удалить все данные в любой момент</li>
+                </ul>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="privacy-agreement" required>
+                <label for="privacy-agreement">
+                    Я согласен с <a href="#" onclick="showPrivacyPolicy()">политикой конфиденциальности</a> и обработкой персональных данных *
+                </label>
+            </div>
+            <div class="error-message" id="privacy-error">Необходимо согласие с политикой конфиденциальности</div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="notifications-agreement">
+                <label for="notifications-agreement">
+                    Я согласен получать уведомления о выполнении задач (рекомендуется)
+                </label>
+            </div>
+
+            <div style="display: flex; gap: var(--spacing-md);">
+                <button class="back-button" onclick="prevStep(4)">← Назад</button>
+                <button class="next-button" onclick="completeRegistration()" disabled id="next-4" style="flex: 1;">
+                    🎉 Завершить регистрацию
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация Telegram WebApp
+        const tgApp = new TelegramWebApp();
+        let currentStep = 1;
+        let formData = {};
+
+        // Загрузка данных из Telegram
+        tgApp.ready(() => {
+            loadTelegramData();
+            validateStep(1);
+        });
+
+        function loadTelegramData() {
+            const tg = tgApp.tg;
+            const telegramDataDiv = document.getElementById('telegram-data');
+            
+            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const user = tg.initDataUnsafe.user;
+                telegramDataDiv.innerHTML = `
+                    <div><strong>👤 ID:</strong> ${user.id}</div>
+                    <div><strong>👋 Имя:</strong> ${user.first_name} ${user.last_name || ''}</div>
+                    <div><strong>📱 Username:</strong> @${user.username || 'не указан'}</div>
+                `;
+                
+                // Автозаполнение имени
+                const nameInput = document.getElementById('user-name');
+                if (user.first_name) {
+                    nameInput.value = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+                    validateInput(nameInput);
+                }
+                
+                formData.telegramId = user.id;
+                formData.telegramUsername = user.username;
+            } else {
+                telegramDataDiv.innerHTML = `
+                    <div style="color: #f44336;">
+                        ⚠️ Данные Telegram недоступны. Откройте приложение через бота.
+                    </div>
+                `;
+            }
+        }
+
+        function validateInput(input) {
+            const errorDiv = document.querySelector(`#${input.id.replace('-', '-').split('-')[0]}-error, #${input.id}-error`);
+            let isValid = true;
+
+            input.classList.remove('error');
+            if (errorDiv) errorDiv.style.display = 'none';
+
+            if (input.type === 'text' && input.hasAttribute('minlength')) {
+                if (input.value.length < parseInt(input.getAttribute('minlength'))) {
+                    isValid = false;
+                }
+            }
+
+            if (input.type === 'tel') {
+                const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+                if (!phoneRegex.test(input.value)) {
+                    isValid = false;
+                }
+            }
+
+            if (input.id === 'city') {
+                const cityRegex = /^[А-Яа-яЁё\s\-]+$/;
+                if (!cityRegex.test(input.value) || input.value.length < 2) {
+                    isValid = false;
+                }
+            }
+
+            if (!isValid && errorDiv) {
+                input.classList.add('error');
+                errorDiv.style.display = 'block';
+            }
+
+            return isValid;
+        }
+
+        function validateStep(step) {
+            let isValid = false;
+            const nextButton = document.getElementById(`next-${step}`);
+
+            switch(step) {
+                case 1:
+                    const name = document.getElementById('user-name');
+                    const phone = document.getElementById('user-phone');
+                    isValid = name.value.length >= 3 && 
+                             /^[\+]?[0-9\s\-\(\)]{10,}$/.test(phone.value);
+                    break;
+                    
+                case 2:
+                    const timezone = document.getElementById('timezone');
+                    const city = document.getElementById('city');
+                    isValid = timezone.value !== '' && 
+                             /^[А-Яа-яЁё\s\-]+$/.test(city.value) && 
+                             city.value.length >= 2;
+                    break;
+                    
+                case 3:
+                    const childName = document.getElementById('child-name');
+                    const childAge = document.getElementById('child-age');
+                    const gender = document.querySelector('input[name="child-gender"]:checked');
+                    isValid = childName.value.length >= 2 && 
+                             childAge.value !== '' && 
+                             gender !== null;
+                    break;
+                    
+                case 4:
+                    const privacy = document.getElementById('privacy-agreement');
+                    isValid = privacy.checked;
+                    break;
+            }
+
+            if (nextButton) {
+                nextButton.disabled = !isValid;
+            }
+
+            return isValid;
+        }
+
+        function nextStep(step) {
+            if (!validateStep(step)) return;
+
+            // Сохраняем данные текущего шага
+            saveStepData(step);
+
+            // Скрываем текущий шаг
+            document.getElementById(`content-${step}`).classList.add('hidden');
+            document.getElementById(`step-${step}`).classList.remove('active');
+            document.getElementById(`step-${step}`).classList.add('completed');
+
+            // Показываем следующий шаг
+            currentStep = step + 1;
+            document.getElementById(`content-${currentStep}`).classList.remove('hidden');
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+
+            // Обновляем главную кнопку Telegram
+            updateTelegramButton();
+            
+            // Валидируем новый шаг
+            setTimeout(() => validateStep(currentStep), 100);
+        }
+
+        function prevStep(step) {
+            // Скрываем текущий шаг
+            document.getElementById(`content-${step}`).classList.add('hidden');
+            document.getElementById(`step-${step}`).classList.remove('active');
+
+            // Показываем предыдущий шаг
+            currentStep = step - 1;
+            document.getElementById(`content-${currentStep}`).classList.remove('hidden');
+            document.getElementById(`step-${currentStep}`).classList.remove('completed');
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+
+            updateTelegramButton();
+        }
+
+        function saveStepData(step) {
+            switch(step) {
+                case 1:
+                    formData.userName = document.getElementById('user-name').value;
+                    formData.userPhone = document.getElementById('user-phone').value;
+                    break;
+                case 2:
+                    formData.timezone = document.getElementById('timezone').value;
+                    formData.city = document.getElementById('city').value;
+                    break;
+                case 3:
+                    formData.childName = document.getElementById('child-name').value;
+                    formData.childAge = document.getElementById('child-age').value;
+                    formData.childGender = document.querySelector('input[name="child-gender"]:checked').value;
+                    break;
+                case 4:
+                    formData.privacyAccepted = document.getElementById('privacy-agreement').checked;
+                    formData.notificationsAccepted = document.getElementById('notifications-agreement').checked;
+                    break;
+            }
+        }
+
+        function updateTelegramButton() {
+            if (tgApp.tg) {
+                switch(currentStep) {
+                    case 1:
+                        tgApp.setMainButton('Продолжить →', () => nextStep(1));
+                        break;
+                    case 2:
+                        tgApp.setMainButton('Продолжить →', () => nextStep(2));
+                        break;
+                    case 3:
+                        tgApp.setMainButton('Продолжить →', () => nextStep(3));
+                        break;
+                    case 4:
+                        tgApp.setMainButton('🎉 Завершить регистрацию', completeRegistration);
+                        break;
+                }
+                tgApp.showMainButton();
+            }
+        }
+
+        function completeRegistration() {
+            if (!validateStep(4)) return;
+
+            saveStepData(4);
+
+            // Показываем процесс
+            const button = document.getElementById('next-4');
+            button.innerHTML = '🔄 Сохраняем данные...';
+            button.disabled = true;
+
+            if (tgApp.tg) {
+                tgApp.tg.MainButton.showProgress();
+            }
+
+            // Имитация сохранения данных
+            setTimeout(() => {
+                console.log('Данные регистрации:', formData);
+                
+                // Переход на главную страницу приложения
+                tgApp.navigateTo('/welcome');
+            }, 2000);
+        }
+
+        function showPrivacyPolicy() {
+            if (tgApp.tg) {
+                tgApp.tg.showPopup({
+                    title: 'Политика конфиденциальности',
+                    message: 'Family Habits обрабатывает персональные данные исключительно для обеспечения работы приложения. Мы не передаем данные третьим лицам и обеспечиваем их защиту.',
+                    buttons: [{type: 'ok', text: 'Понятно'}]
+                });
+            } else {
+                alert('Family Habits обрабатывает персональные данные исключительно для обеспечения работы приложения.');
+            }
+        }
+
+        // Добавляем слушатели событий для валидации в реальном времени
+        document.addEventListener('DOMContentLoaded', () => {
+            // Валидация текстовых полей
+            ['user-name', 'user-phone', 'city', 'child-name'].forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('input', () => {
+                        validateInput(input);
+                        validateStep(currentStep);
+                    });
+                }
+            });
+
+            // Валидация селектов
+            ['timezone', 'child-age'].forEach(id => {
+                const select = document.getElementById(id);
+                if (select) {
+                    select.addEventListener('change', () => validateStep(currentStep));
+                }
+            });
+
+            // Валидация радио кнопок
+            document.querySelectorAll('input[name="child-gender"]').forEach(radio => {
+                radio.addEventListener('change', () => validateStep(currentStep));
+            });
+
+            // Валидация чекбокса
+            const privacyCheck = document.getElementById('privacy-agreement');
+            if (privacyCheck) {
+                privacyCheck.addEventListener('change', () => validateStep(currentStep));
+            }
+        });
+
+        // Обработка ошибок
+        window.onerror = function(msg, url, line, col, error) {
+            console.error('Ошибка регистрации:', msg, error);
+        };
+    </script>
+</body>
+</html>
