@@ -132,8 +132,13 @@
             Готов к работе!
         </div>
         
-        <button class="btn" onclick="startApp()">
+        <button class="btn" onclick="startApp()" id="start-button">
             🚀 Начать использование
+        </button>
+        
+        <!-- Тестовая кнопка для диагностики -->
+        <button class="btn" onclick="testNavigation()" id="test-button" style="margin-top: 10px; background: #FF5722;">
+            🔧 Тест навигации (отладка)
         </button>
         
         <div class="features">
@@ -184,42 +189,147 @@
         }
         
         function startApp() {
-            console.log('🚀 Запуск приложения...');
+            console.log('🚀 === НАЧАЛО ФУНКЦИИ startApp ===');
+            console.log('Current timestamp:', new Date().toISOString());
             console.log('Current location:', window.location.href);
             console.log('Base URL:', window.location.origin);
+            console.log('JavaScript enabled:', true);
+            
+            // Проверяем базовые возможности
+            console.log('🔍 Проверяем базовые возможности браузера:');
+            console.log('- localStorage доступен:', typeof(Storage) !== "undefined");
+            console.log('- fetch доступен:', typeof(fetch) !== "undefined");
+            console.log('- Promise доступен:', typeof(Promise) !== "undefined");
             
             // Показываем индикатор загрузки
             const btn = document.querySelector('.btn');
+            const statusDiv = document.getElementById('status');
             const originalText = btn.innerHTML;
+            
+            console.log('🎯 Элементы найдены:', {
+                button: !!btn,
+                statusDiv: !!statusDiv,
+                originalText: originalText
+            });
+            
             btn.innerHTML = '🔄 Загрузка...';
             btn.disabled = true;
+            statusDiv.innerHTML = '🔄 Инициализация перехода...';
+            
+            console.log('✅ UI обновлен для показа загрузки');
             
             if (tg) {
                 try {
+                    console.log('📱 Telegram WebApp обнаружен, пытаемся показать прогресс');
                     tg.MainButton.showProgress();
-                    console.log('✅ Telegram MainButton.showProgress() called');
+                    console.log('✅ Telegram MainButton.showProgress() вызван успешно');
                 } catch (e) {
                     console.error('❌ Ошибка с Telegram MainButton:', e);
                 }
+            } else {
+                console.log('⚠️ Telegram WebApp не обнаружен');
             }
             
-            // Проверяем доступность маршрута
+            // Проверяем доступность маршрута ПЕРЕД переходом
             const registrationUrl = '/registration';
-            console.log('🔍 Пытаемся перейти на:', registrationUrl);
+            console.log('🔍 Проверяем доступность маршрута:', registrationUrl);
             
-            // Добавляем таймаут для отладки
-            setTimeout(() => {
-                try {
-                    console.log('🔄 Выполняем переход...');
-                    window.location.href = registrationUrl;
-                } catch (error) {
-                    console.error('❌ Ошибка при переходе:', error);
-                    // Восстанавливаем кнопку при ошибке
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                    document.getElementById('status').innerHTML = '❌ Ошибка перехода: ' + error.message;
-                }
-            }, 500);
+            // Первая проверка - HEAD запрос
+            fetch(registrationUrl, { method: 'HEAD' })
+                .then(response => {
+                    console.log('📊 HEAD запрос выполнен, статус:', response.status);
+                    if (response.ok) {
+                        console.log('✅ Маршрут доступен, выполняем переход...');
+                        statusDiv.innerHTML = '✅ Сервер отвечает, выполняем переход...';
+                        
+                        // Даем время на отображение статуса
+                        setTimeout(() => {
+                            console.log('🔄 Попытка перехода #1: window.location.href');
+                            try {
+                                window.location.href = registrationUrl;
+                                console.log('✅ window.location.href выполнен');
+                            } catch (error) {
+                                console.error('❌ Ошибка window.location.href:', error);
+                                
+                                // Попробуем альтернативный способ
+                                console.log('🔄 Попытка перехода #2: window.location.assign');
+                                try {
+                                    window.location.assign(registrationUrl);
+                                    console.log('✅ window.location.assign выполнен');
+                                } catch (error2) {
+                                    console.error('❌ Ошибка window.location.assign:', error2);
+                                    
+                                    // Третья попытка
+                                    console.log('🔄 Попытка перехода #3: window.open');
+                                    try {
+                                        window.open(registrationUrl, '_self');
+                                        console.log('✅ window.open выполнен');
+                                    } catch (error3) {
+                                        console.error('❌ Все методы перехода не сработали:', error3);
+                                        statusDiv.innerHTML = '❌ Ошибка: браузер блокирует переходы';
+                                        btn.innerHTML = originalText;
+                                        btn.disabled = false;
+                                    }
+                                }
+                            }
+                        }, 300);
+                    } else {
+                        console.error('❌ Сервер вернул ошибку:', response.status, response.statusText);
+                        statusDiv.innerHTML = `❌ Сервер недоступен (${response.status})`;
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Ошибка сети при проверке маршрута:', error);
+                    statusDiv.innerHTML = '❌ Ошибка подключения к серверу';
+                    
+                    // Попробуем переход без проверки
+                    console.log('🔄 Пробуем переход без предварительной проверки...');
+                    setTimeout(() => {
+                        try {
+                            window.location.href = registrationUrl;
+                        } catch (e) {
+                            console.error('❌ Переход без проверки тоже не сработал:', e);
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                        }
+                    }, 500);
+                });
+                
+            console.log('🚀 === КОНЕЦ ФУНКЦИИ startApp ===');
+        }
+        
+        // Функция для тестирования навигации
+        function testNavigation() {
+            console.log('🔧 === ТЕСТ НАВИГАЦИИ ===');
+            const methods = [
+                () => { window.location.href = '/registration'; },
+                () => { window.location.assign('/registration'); },
+                () => { window.location.replace('/registration'); },
+                () => { window.open('/registration', '_self'); },
+                () => { window.open('/registration', '_blank'); }
+            ];
+            
+            const methodNames = [
+                'window.location.href',
+                'window.location.assign',
+                'window.location.replace',
+                'window.open(_self)',
+                'window.open(_blank)'
+            ];
+            
+            methods.forEach((method, index) => {
+                setTimeout(() => {
+                    try {
+                        console.log(`🔧 Тестируем метод ${index + 1}: ${methodNames[index]}`);
+                        method();
+                        console.log(`✅ Метод ${methodNames[index]} выполнен`);
+                    } catch (error) {
+                        console.error(`❌ Метод ${methodNames[index]} не сработал:`, error);
+                    }
+                }, index * 1000);
+            });
         }
         
         // Обработка ошибок
@@ -230,22 +340,48 @@
         
         // Проверка загрузки
         window.addEventListener('load', () => {
-            console.log('📱 Страница полностью загружена');
+            console.log('📱 === СТРАНИЦА ПОЛНОСТЬЮ ЗАГРУЖЕНА ===');
             console.log('🔍 Проверяем доступность маршрутов...');
+            
+            // Детальная проверка элементов страницы
+            const startButton = document.getElementById('start-button');
+            const statusDiv = document.getElementById('status');
+            
+            console.log('🎯 Проверка элементов:', {
+                startButton: !!startButton,
+                statusDiv: !!statusDiv,
+                startButtonDisabled: startButton?.disabled,
+                startButtonOnclick: startButton?.onclick,
+                startButtonEventListeners: startButton?.addEventListener
+            });
             
             // Проверяем доступность маршрута регистрации
             fetch('/registration', { method: 'HEAD' })
                 .then(response => {
+                    console.log('📊 Проверка /registration:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        ok: response.ok,
+                        headers: Object.fromEntries(response.headers.entries())
+                    });
+                    
                     if (response.ok) {
                         console.log('✅ Маршрут /registration доступен');
+                        if (statusDiv) {
+                            statusDiv.innerHTML = '✅ Готов к работе!';
+                        }
                     } else {
                         console.error('❌ Маршрут /registration недоступен, статус:', response.status);
-                        document.getElementById('status').innerHTML = '⚠️ Проблема с сервером (статус: ' + response.status + ')';
+                        if (statusDiv) {
+                            statusDiv.innerHTML = '⚠️ Проблема с сервером (статус: ' + response.status + ')';
+                        }
                     }
                 })
                 .catch(error => {
                     console.error('❌ Ошибка проверки маршрута:', error);
-                    document.getElementById('status').innerHTML = '⚠️ Проблема с подключением к серверу';
+                    if (statusDiv) {
+                        statusDiv.innerHTML = '⚠️ Проблема с подключением к серверу';
+                    }
                 });
             
             if (!isReady && window.Telegram && window.Telegram.WebApp) {
@@ -256,20 +392,86 @@
                 }, 1000);
             }
             
-            // Дополнительный обработчик клика для кнопки (на случай проблем с onclick)
-            const startButton = document.querySelector('.btn');
+            // Дополнительные обработчики для кнопки
             if (startButton) {
+                console.log('🎯 Добавляем дополнительные обработчики событий...');
+                
+                // Обработчик клика как альтернатива onclick
                 startButton.addEventListener('click', function(event) {
-                    console.log('🖱️ Клик по кнопке зарегистрирован через addEventListener');
-                    // startApp() уже вызывается через onclick, но логируем для отладки
+                    console.log('🖱️ === КЛИК ПО КНОПКЕ ЗАРЕГИСТРИРОВАН ===');
+                    console.log('Event details:', {
+                        type: event.type,
+                        target: event.target,
+                        currentTarget: event.currentTarget,
+                        defaultPrevented: event.defaultPrevented,
+                        cancelable: event.cancelable
+                    });
                 });
+                
+                // Обработчик mousedown
+                startButton.addEventListener('mousedown', function(event) {
+                    console.log('🖱️ MOUSEDOWN на кнопке');
+                });
+                
+                // Обработчик touchstart для мобильных
+                startButton.addEventListener('touchstart', function(event) {
+                    console.log('📱 TOUCHSTART на кнопке');
+                });
+                
+                // Проверяем, может ли кнопка получать фокус
+                startButton.addEventListener('focus', function() {
+                    console.log('🎯 Кнопка получила фокус');
+                });
+                
+                console.log('✅ Дополнительные обработчики добавлены');
+            } else {
+                console.error('❌ Кнопка start-button не найдена!');
             }
         });
         
         // Отладочная информация
+        console.log('🔍 === СИСТЕМНАЯ ИНФОРМАЦИЯ ===');
         console.log('User Agent:', navigator.userAgent);
         console.log('Location:', window.location.href);
+        console.log('Protocol:', window.location.protocol);
+        console.log('Host:', window.location.host);
         console.log('Telegram available:', !!window.Telegram);
+        console.log('Document readyState:', document.readyState);
+        console.log('Window.location methods available:', {
+            href: typeof window.location.href,
+            assign: typeof window.location.assign,
+            replace: typeof window.location.replace
+        });
+        
+        // Проверка Content Security Policy
+        if (document.querySelector('meta[http-equiv="Content-Security-Policy"]')) {
+            console.log('⚠️ CSP обнаружен:', document.querySelector('meta[http-equiv="Content-Security-Policy"]').content);
+        } else {
+            console.log('✅ CSP мета-тег не найден');
+        }
+        
+        // Проверка на блокировку pop-ups
+        try {
+            const testWindow = window.open('', '_self');
+            if (testWindow) {
+                console.log('✅ window.open не заблокирован');
+                testWindow.close();
+            } else {
+                console.log('⚠️ window.open может быть заблокирован');
+            }
+        } catch (e) {
+            console.log('⚠️ window.open заблокирован:', e.message);
+        }
+        
+        // Добавляем глобальный обработчик кликов для отладки
+        document.addEventListener('click', function(event) {
+            console.log('🖱️ Глобальный клик:', {
+                target: event.target.tagName,
+                targetId: event.target.id,
+                targetClass: event.target.className,
+                defaultPrevented: event.defaultPrevented
+            });
+        });
     </script>
 </body>
 </html>
