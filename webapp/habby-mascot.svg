@@ -1,0 +1,67 @@
+<!-- Habby - маскот рокер с гитарой -->
+<svg width="140" height="140" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+  <!-- Тело -->
+  <ellipse cx="70" cy="90" rx="35" ry="40" fill="#7CB342"/>
+  
+  <!-- Голова -->
+  <circle cx="70" cy="45" r="25" fill="#8BC34A"/>
+  
+  <!-- Лист на голове -->
+  <path d="M70 20 Q80 15 85 25 Q80 35 70 30 Q60 35 55 25 Q60 15 70 20 Z" fill="#4CAF50"/>
+  
+  <!-- Ирокез -->
+  <path d="M60 25 Q70 10 80 25" stroke="#E91E63" stroke-width="8" fill="none"/>
+  <path d="M62 28 Q70 15 78 28" stroke="#C2185B" stroke-width="6" fill="none"/>
+  
+  <!-- Глаза -->
+  <circle cx="63" cy="42" r="4" fill="white"/>
+  <circle cx="77" cy="42" r="4" fill="white"/>
+  <circle cx="63" cy="42" r="2" fill="black"/>
+  <circle cx="77" cy="42" r="2" fill="black"/>
+  
+  <!-- Ухмылка -->
+  <path d="M58 50 Q70 60 82 50" stroke="#2E7D32" stroke-width="2" fill="none"/>
+  
+  <!-- Кожанка -->
+  <rect x="50" y="70" width="40" height="30" fill="#212121" rx="5"/>
+  <rect x="52" y="72" width="36" height="26" fill="#424242" rx="4"/>
+  
+  <!-- Молнии на куртке -->
+  <line x1="55" y1="75" x2="55" y2="95" stroke="#9E9E9E" stroke-width="1"/>
+  <line x1="85" y1="75" x2="85" y2="95" stroke="#9E9E9E" stroke-width="1"/>
+  
+  <!-- Гитара -->
+  <ellipse cx="100" cy="90" rx="12" ry="18" fill="#D32F2F"/>
+  <ellipse cx="100" cy="90" rx="8" ry="14" fill="#B71C1C"/>
+  <circle cx="100" cy="90" r="6" fill="black"/>
+  
+  <!-- Гриф гитары -->
+  <rect x="100" y="65" width="4" height="15" fill="#5D4037"/>
+  
+  <!-- Струны -->
+  <line x1="101" y1="65" x2="101" y2="80" stroke="#FFC107" stroke-width="0.5"/>
+  <line x1="102" y1="65" x2="102" y2="80" stroke="#FFC107" stroke-width="0.5"/>
+  <line x1="103" y1="65" x2="103" y2="80" stroke="#FFC107" stroke-width="0.5"/>
+  
+  <!-- Рука играет на гитаре -->
+  <circle cx="105" cy="85" r="6" fill="#8BC34A"/>
+  
+  <!-- Ножки в ботинках -->
+  <ellipse cx="60" cy="125" rx="8" ry="12" fill="#212121"/>
+  <ellipse cx="80" cy="125" rx="8" ry="12" fill="#212121"/>
+  <rect x="55" y="120" width="10" height="8" fill="#424242"/>
+  <rect x="75" y="120" width="10" height="8" fill="#424242"/>
+  
+  <!-- Блики на глазах -->
+  <circle cx="64" cy="41" r="1" fill="white"/>
+  <circle cx="78" cy="41" r="1" fill="white"/>
+  
+  <!-- Румянец -->
+  <circle cx="55" cy="48" r="3" fill="#FF8A80" opacity="0.6"/>
+  <circle cx="85" cy="48" r="3" fill="#FF8A80" opacity="0.6"/>
+  
+  <!-- Музыкальные ноты -->
+  <text x="25" y="40" font-family="Arial" font-size="12" fill="#FFC107">♪</text>
+  <text x="115" y="55" font-family="Arial" font-size="10" fill="#FFC107">♫</text>
+  <text x="30" y="70" font-family="Arial" font-size="8" fill="#FFC107">♪</text>
+</svg>

@@ -1,0 +1,46 @@
+<!-- Habit - маскот ученик с книгой -->
+<svg width="140" height="140" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+  <!-- Тело -->
+  <ellipse cx="70" cy="90" rx="35" ry="40" fill="#7CB342"/>
+  
+  <!-- Голова -->
+  <circle cx="70" cy="45" r="25" fill="#8BC34A"/>
+  
+  <!-- Лист на голове -->
+  <path d="M70 20 Q80 15 85 25 Q80 35 70 30 Q60 35 55 25 Q60 15 70 20 Z" fill="#4CAF50"/>
+  
+  <!-- Глаза -->
+  <circle cx="63" cy="42" r="4" fill="white"/>
+  <circle cx="77" cy="42" r="4" fill="white"/>
+  <circle cx="63" cy="42" r="2" fill="black"/>
+  <circle cx="77" cy="42" r="2" fill="black"/>
+  
+  <!-- Улыбка -->
+  <path d="M60 50 Q70 58 80 50" stroke="#2E7D32" stroke-width="2" fill="none"/>
+  
+  <!-- Рубашка -->
+  <rect x="55" y="70" width="30" height="25" fill="#1976D2" rx="5"/>
+  
+  <!-- Книга в руках -->
+  <rect x="45" y="85" width="15" height="20" fill="#8D6E63" rx="2"/>
+  <rect x="47" y="87" width="11" height="16" fill="#FFF3E0"/>
+  <line x1="49" y1="90" x2="56" y2="90" stroke="#666" stroke-width="1"/>
+  <line x1="49" y1="93" x2="55" y2="93" stroke="#666" stroke-width="1"/>
+  <line x1="49" y1="96" x2="56" y2="96" stroke="#666" stroke-width="1"/>
+  
+  <!-- Рюкзак -->
+  <ellipse cx="90" cy="85" rx="8" ry="12" fill="#5D4037"/>
+  <rect x="87" y="78" width="6" height="4" fill="#3E2723"/>
+  
+  <!-- Ножки -->
+  <ellipse cx="60" cy="125" rx="8" ry="12" fill="#7CB342"/>
+  <ellipse cx="80" cy="125" rx="8" ry="12" fill="#7CB342"/>
+  
+  <!-- Блики на глазах -->
+  <circle cx="64" cy="41" r="1" fill="white"/>
+  <circle cx="78" cy="41" r="1" fill="white"/>
+  
+  <!-- Румянец -->
+  <circle cx="55" cy="48" r="3" fill="#FF8A80" opacity="0.6"/>
+  <circle cx="85" cy="48" r="3" fill="#FF8A80" opacity="0.6"/>
+</svg>

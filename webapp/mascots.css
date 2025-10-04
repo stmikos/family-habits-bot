@@ -1,0 +1,24 @@
+/* Habit - маскот ученик с книгой */
+.habit-mascot {
+    width: 120px;
+    height: 120px;
+    background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjNENBRjUwIiByeD0iNjAiLz4KPHRLEHT5Zm9udC1mYW1pbHk6QXJpYWw7Zm9udC1zaXplOjgwcHg7ZmlsbDp3aGl0ZSI+8J+MsTwvdGV4dD4KPC9zdmc+') no-repeat center;
+    background-size: contain;
+    margin: 0 auto 10px;
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Habby - маскот рокер с гитарой */
+.habby-mascot {
+    width: 120px;
+    height: 120px;
+    background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMkU3RDMyIiByeD0iNjAiLz4KPHRLEHT5Zm9udC1mYW1pbHk6QXJpYWw7Zm9udC1zaXplOjgwcHg7ZmlsbDp3aGl0ZSI+8J+NozwvdGV4dD4KPC9zdmc+') no-repeat center;
+    background-size: contain;
+    margin: 0 auto 10px;
+    animation: float 3s ease-in-out infinite 1.5s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}

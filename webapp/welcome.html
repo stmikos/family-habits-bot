@@ -12,6 +12,12 @@
     <script src="telegram-webapp.js"></script>
     
     <style>
+        body {
+            background: var(--gradient-hero);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
         .welcome-hero {
             text-align: center;
             padding: var(--spacing-xl) 0;
@@ -34,45 +40,127 @@
             animation: float 20s ease-in-out infinite;
         }
         
-        .celebration-mascots {
+        .mascots-container {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: var(--spacing-lg);
-            margin: var(--spacing-lg) 0;
+            margin: var(--spacing-xl) 0;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
         
-        .mascot-celebration {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(145deg, #8BC34A 0%, #689F38 100%);
-            border-radius: 50% 50% 45% 55%;
+        .mascot-character {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(255,255,255,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            border: 4px solid var(--primary-green);
-            box-shadow: var(--glow-green);
             position: relative;
-            animation: star-burst 2s ease-out, float 4s ease-in-out infinite;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
         
-        .mascot-celebration:nth-child(2) {
-            background: linear-gradient(145deg, #7CB342 0%, #558B2F 100%);
-            border-radius: 55% 45% 50% 50%;
+        .mascot-character:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+        
+        .mascot-emoji {
+            font-size: 4em;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        .mascot-character:nth-child(2) .mascot-emoji {
             animation-delay: 0.5s;
         }
         
-        .mascot-celebration::after {
-            content: '✨';
-            position: absolute;
-            top: -20px;
-            right: -20px;
-            font-size: 1.5rem;
-            animation: glow-rotate 3s linear infinite;
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(2deg); }
+            50% { transform: translateY(-4px) rotate(0deg); }
+            75% { transform: translateY(-8px) rotate(-2deg); }
         }
         
+        .mascot-intro {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .mascot-names {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-md);
+        }
+        
+        .mascot-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--primary-green);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .start-button {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--border-radius-xl);
+            font-size: 1.3em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--accent-green);
+            margin-top: var(--spacing-lg);
+            position: relative;
+            z-index: 2;
+            min-width: 200px;
+        }
+        
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            background: var(--gradient-success);
+        }
+        
+        .start-button:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .speech-bubble {
+            background: rgba(255,255,255,0.95);
+            color: var(--text-dark);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-lg);
+            margin: var(--spacing-lg) 0;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+            border: 2px solid var(--accent-green);
+        }
+        
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid var(--accent-green);
+        }
+
         .welcome-steps {
             display: grid;
             grid-template-columns: 1fr;
@@ -89,392 +177,243 @@
             align-items: center;
             gap: var(--spacing-md);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
         
         .step-card:hover {
+            border-color: var(--accent-green);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-card);
-            border-color: var(--primary-green);
-        }
-        
-        .step-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--gradient-primary);
+            box-shadow: var(--shadow-sm);
         }
         
         .step-icon {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: var(--gradient-primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-            flex-shrink: 0;
-            border: 2px solid var(--primary-green);
-        }
-        
-        .step-content {
-            flex: 1;
-        }
-        
-        .step-title {
-            font-weight: var(--font-semibold);
-            color: var(--text-primary);
-            margin-bottom: var(--spacing-xs);
-        }
-        
-        .step-description {
-            color: var(--text-secondary);
-            font-size: var(--text-sm);
-        }
-        
-        .quick-start-section {
-            background: rgba(168, 201, 138, 0.1);
-            border: 1px solid var(--soft-green);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-lg);
-            margin: var(--spacing-lg) 0;
-        }
-        
-        .habit-suggestion {
-            background: var(--bg-card);
-            border: 1px solid rgba(107, 142, 78, 0.2);
-            border-radius: var(--border-radius);
-            padding: var(--spacing-sm);
-            margin: var(--spacing-xs) 0;
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .habit-suggestion:hover {
-            border-color: var(--primary-green);
-            background: rgba(107, 142, 78, 0.05);
-        }
-        
-        .habit-suggestion.selected {
-            border-color: var(--primary-green);
-            background: rgba(107, 142, 78, 0.1);
-        }
-        
-        .habit-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
+            font-size: 1.5rem;
+            color: white;
             flex-shrink: 0;
         }
         
-        .tip-mascot {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            background: rgba(123, 160, 91, 0.1);
-            border: 1px solid var(--accent-green);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-md);
-            margin: var(--spacing-md) 0;
-            position: relative;
-        }
-        
-        .tip-mascot::before {
-            content: '💡';
+        .sparkles {
             position: absolute;
-            top: -10px;
-            right: var(--spacing-md);
-            font-size: 1.2rem;
-            background: var(--bg-card);
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
         
-        .achievement-preview {
-            background: linear-gradient(135deg, rgba(168, 201, 138, 0.2) 0%, rgba(184, 216, 186, 0.2) 100%);
-            border: 2px solid var(--soft-green);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-md);
-            margin: var(--spacing-lg) 0;
-            text-align: center;
+        .sparkle {
+            position: absolute;
+            color: var(--accent-green);
+            font-size: 1.5rem;
+            animation: sparkle 3s linear infinite;
+            opacity: 0;
         }
         
-        .achievement-badge {
-            width: 80px;
-            height: 80px;
-            background: var(--gradient-reward);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto var(--spacing-sm);
-            border: 3px solid var(--accent-green);
-            box-shadow: var(--glow-green);
-            animation: pulse-neon 3s infinite;
+        @keyframes sparkle {
+            0% { opacity: 0; transform: scale(0.3) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1) rotate(180deg); }
+            100% { opacity: 0; transform: scale(0.3) rotate(360deg); }
         }
         
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: var(--primary-green);
-            animation: confetti-fall 3s linear infinite;
-        }
-        
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-100vh) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Праздничные герои -->
         <div class="welcome-hero">
-            <div class="celebration-mascots">
-                <div class="mascot-celebration">🎉</div>
-                <div class="mascot-celebration">🌟</div>
+            <div class="sparkles">
+                <span class="sparkle" style="top: 20%; left: 20%; animation-delay: 0s;">✨</span>
+                <span class="sparkle" style="top: 30%; right: 25%; animation-delay: 1s;">⭐</span>
+                <span class="sparkle" style="bottom: 30%; left: 30%; animation-delay: 2s;">🌟</span>
+                <span class="sparkle" style="top: 40%; right: 40%; animation-delay: 0.5s;">💫</span>
             </div>
-            <h1 class="heading-1 text-neon">Добро пожаловать в Family Habits!</h1>
-            <p class="text-primary" style="font-size: var(--text-lg); font-weight: var(--font-semibold);">
-                🎊 Ваша семья успешно зарегистрирована!
-            </p>
-            <p class="text-secondary">Хабит и Хабби готовы помочь вам развивать полезные привычки</p>
-        </div>
-
-        <!-- Достижение за регистрацию -->
-        <div class="achievement-preview">
-            <div class="achievement-badge">🏆</div>
-            <h3 class="heading-3">Первое достижение!</h3>
-            <p class="text-secondary">Вы получили значок "Основатель семьи" и стартовые 50 звезд!</p>
-            <div class="points-display animate-star-burst" style="margin-top: var(--spacing-sm);">
-                ⭐ 50 звезд получено!
-            </div>
-        </div>
-
-        <!-- Что дальше -->
-        <section>
-            <h2 class="heading-2">🚀 Что дальше?</h2>
             
-            <div class="welcome-steps">
-                <div class="step-card">
-                    <div class="step-icon">📋</div>
-                    <div class="step-content">
-                        <div class="step-title">Создайте первые задачи</div>
-                        <div class="step-description">Добавьте простые ежедневные привычки для всей семьи</div>
-                    </div>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-icon">⭐</div>
-                    <div class="step-content">
-                        <div class="step-title">Зарабатывайте звезды</div>
-                        <div class="step-description">Выполняйте задачи и собирайте звезды за каждое достижение</div>
-                    </div>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-icon">🛍️</div>
-                    <div class="step-content">
-                        <div class="step-title">Тратьте в магазине</div>
-                        <div class="step-description">Обменивайте звезды на желанные награды и привилегии</div>
-                    </div>
-                </div>
-                
-                <div class="step-card">
-                    <div class="step-icon">👨‍👩‍👧‍👦</div>
-                    <div class="step-content">
-                        <div class="step-title">Развивайтесь вместе</div>
-                        <div class="step-description">Поддерживайте друг друга и празднуйте семейные достижения</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Быстрый старт -->
-        <div class="quick-start-section">
-            <h3 class="heading-3">⚡ Быстрый старт</h3>
-            <p class="text-secondary">Хабби предлагает несколько популярных привычек для начала:</p>
+            <h1 class="title-primary" style="position: relative; z-index: 2;">
+                🎉 Добро пожаловать в Family Habits! 🎉
+            </h1>
             
-            <div id="habitSuggestions">
-                <div class="habit-suggestion" data-habit="teeth">
-                    <div class="habit-icon">🦷</div>
-                    <div>
-                        <strong>Чистить зубы</strong>
-                        <div class="text-xs text-muted">Утром и вечером</div>
-                    </div>
+            <div class="mascot-intro">
+                <p class="subtitle" style="color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
+                    Познакомьтесь с нашими помощниками!
+                </p>
+            </div>
+            
+            <div class="mascots-container">
+                <div class="mascot-character">
+                    <span class="mascot-emoji">🌱</span>
                 </div>
-                
-                <div class="habit-suggestion" data-habit="reading">
-                    <div class="habit-icon">📚</div>
-                    <div>
-                        <strong>Читать перед сном</strong>
-                        <div class="text-xs text-muted">15 минут каждый день</div>
-                    </div>
-                </div>
-                
-                <div class="habit-suggestion" data-habit="cleanup">
-                    <div class="habit-icon">🧹</div>
-                    <div>
-                        <strong>Убирать игрушки</strong>
-                        <div class="text-xs text-muted">После игр</div>
-                    </div>
-                </div>
-                
-                <div class="habit-suggestion" data-habit="exercise">
-                    <div class="habit-icon">🏃</div>
-                    <div>
-                        <strong>Утренняя зарядка</strong>
-                        <div class="text-xs text-muted">Всей семьей</div>
-                    </div>
+                <div class="mascot-character">
+                    <span class="mascot-emoji">🍃</span>
                 </div>
             </div>
             
-            <button class="btn btn-primary" style="margin-top: var(--spacing-md); width: 100%;" onclick="createSelectedHabits()">
-                Создать выбранные привычки ✨
+            <div class="mascot-names">
+                <span class="mascot-name">Habit</span>
+                <span class="mascot-name">Habby</span>
+            </div>
+            
+            <div class="speech-bubble">
+                <p><strong>Habit:</strong> "Привет! Я помогу тебе изучать новые привычки!" 📚</p>
+                <p><strong>Habby:</strong> "А я покажу, как весело их выполнять!" 🎸</p>
+            </div>
+            
+            <button class="start-button" onclick="startJourney()">
+                🚀 Начать приключение!
             </button>
         </div>
-
-        <!-- Совет от талисманов -->
-        <div class="tip-mascot">
-            <div class="mascot-small">🌱</div>
-            <div>
-                <strong>Совет от Хабита:</strong> "Начните с 2-3 простых привычек. Лучше выполнять немного каждый день, чем много один раз! 💚"
+        
+        <div class="welcome-steps">
+            <div class="step-card">
+                <div class="step-icon">👨‍👩‍👧‍👦</div>
+                <div>
+                    <h3>Создайте семью</h3>
+                    <p>Добавьте всех членов семьи и начните путешествие вместе</p>
+                </div>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-icon">✅</div>
+                <div>
+                    <h3>Ставьте цели</h3>
+                    <p>Создавайте полезные привычки для каждого члена семьи</p>
+                </div>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-icon">🏆</div>
+                <div>
+                    <h3>Получайте награды</h3>
+                    <p>Зарабатывайте монеты и покупайте призы в семейном магазине</p>
+                </div>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-icon">📊</div>
+                <div>
+                    <h3>Отслеживайте прогресс</h3>
+                    <p>Смотрите статистику и мотивируйте друг друга</p>
+                </div>
             </div>
         </div>
-
-        <!-- Действия -->
-        <div class="flex gap-sm" style="margin-top: var(--spacing-xl);">
-            <button class="btn btn-secondary" onclick="skipToApp()">
-                Пропустить и перейти в приложение
+        
+        <div class="button-group">
+            <button class="btn btn-secondary" onclick="goBack()">
+                ← Назад
             </button>
-            <button class="btn btn-primary btn-large" style="flex: 1;" onclick="startJourney()">
-                Начать путешествие! 🚀
+            <button class="btn btn-primary" onclick="continueTour()">
+                Узнать больше →
             </button>
-        </div>
-
-        <!-- Финальное поощрение -->
-        <div class="text-center" style="margin: var(--spacing-xl) 0;">
-            <div class="mascot-container">
-                <div class="mascot">💚</div>
-                <div class="mascot mascot-punk">🌟</div>
-            </div>
-            <p class="text-neon text-gaming">Welcome to the Family!</p>
-            <p class="text-muted">Хабит и Хабби всегда рядом, чтобы помочь!</p>
         </div>
     </div>
-
+    
     <script>
-        // Обработка выбора привычек
-        document.querySelectorAll('.habit-suggestion').forEach(suggestion => {
-            suggestion.addEventListener('click', () => {
-                suggestion.classList.toggle('selected');
-                updateCreateButton();
-            });
+        // Инициализация Telegram WebApp
+        const tgApp = new TelegramWebApp();
+        
+        // Настройка главной кнопки
+        tgApp.ready(() => {
+            tgApp.setMainButton('🚀 Начать приключение!', startJourney);
+            tgApp.showMainButton();
         });
-        
-        function updateCreateButton() {
-            const selected = document.querySelectorAll('.habit-suggestion.selected');
-            const button = document.querySelector('.quick-start-section .btn-primary');
-            
-            if (selected.length > 0) {
-                button.textContent = `Создать ${selected.length} привычек ✨`;
-                button.disabled = false;
-            } else {
-                button.textContent = 'Выберите привычки для создания';
-                button.disabled = true;
-            }
-        }
-        
-        function createSelectedHabits() {
-            const selected = document.querySelectorAll('.habit-suggestion.selected');
-            
-            if (selected.length === 0) {
-                alert('🌱 Выберите хотя бы одну привычку!');
-                return;
-            }
-            
-            const habits = Array.from(selected).map(el => el.dataset.habit);
-            console.log('Creating habits:', habits);
-            
-            // Анимация успеха
-            const button = event.target;
-            button.textContent = '✅ Привычки созданы!';
-            button.classList.remove('btn-primary');
-            button.classList.add('btn-reward');
-            
-            // Создаем конфетти
-            createConfetti();
-            
-            setTimeout(() => {
-                alert(`🎉 Отлично! Созданы ${selected.length} привычек!\n\n⭐ Вы получили +${selected.length * 10} звезд за создание привычек!`);
-                startJourney();
-            }, 2000);
-        }
-        
-        function createConfetti() {
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + 'vw';
-                    confetti.style.animationDelay = Math.random() * 3 + 's';
-                    confetti.style.background = ['#6B8E4E', '#7BA05B', '#A8C98A', '#B8D8BA'][Math.floor(Math.random() * 4)];
-                    document.body.appendChild(confetti);
-                    
-                    setTimeout(() => confetti.remove(), 3000);
-                }, i * 50);
-            }
-        }
-        
-        function skipToApp() {
-            if (confirm('🌱 Вы уверены, что хотите пропустить быстрый старт?\n\nВы сможете создать привычки позже в приложении.')) {
-                window.location.href = 'index.html';
-            }
-        }
         
         function startJourney() {
-            alert('🚀 Добро пожаловать в Family Habits!\n\n🌱 Хабит и Хабби уже ждут вас в главном приложении!');
-            window.location.href = 'index.html';
+            console.log('🚀 Начинаем приключение Family Habits!');
+            
+            // Анимация перед переходом
+            const button = document.querySelector('.start-button');
+            if (button) {
+                button.innerHTML = '🌟 Загружаем...';
+                button.disabled = true;
+            }
+            
+            // Показываем прогресс в Telegram
+            if (tgApp.tg) {
+                tgApp.tg.MainButton.showProgress();
+            }
+            
+            // Переход на создание задач
+            setTimeout(() => {
+                tgApp.navigateTo('/create-task');
+            }, 1000);
         }
         
-        // Автоматическая анимация при загрузке
-        document.addEventListener('DOMContentLoaded', () => {
-            // Анимация появления карточек
-            const stepCards = document.querySelectorAll('.step-card');
-            stepCards.forEach((card, index) => {
+        function goBack() {
+            tgApp.navigateTo('/registration-children');
+        }
+        
+        function continueTour() {
+            tgApp.navigateTo('/create-task');
+        }
+        
+        // Добавляем интерактивность к маскотам
+        document.querySelectorAll('.mascot-character').forEach((mascot, index) => {
+            mascot.addEventListener('click', () => {
+                const messages = [
+                    'Habit: "Готов помочь с изучением новых привычек! 📚"',
+                    'Habby: "Давайте сделаем привычки веселыми! 🎸"'
+                ];
+                
+                // Создаем временное сообщение
+                const msg = document.createElement('div');
+                msg.className = 'mascot-message';
+                msg.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: white;
+                    color: #2E7D32;
+                    padding: 20px;
+                    border-radius: 15px;
+                    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+                    z-index: 1000;
+                    max-width: 300px;
+                    text-align: center;
+                    border: 2px solid #4CAF50;
+                `;
+                msg.textContent = messages[index];
+                
+                document.body.appendChild(msg);
+                
+                // Удаляем сообщение через 3 секунды
                 setTimeout(() => {
-                    card.style.animation = 'star-burst 0.6s ease-out';
+                    msg.remove();
+                }, 3000);
+                
+                // Анимация маскота
+                mascot.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    mascot.style.transform = '';
+                }, 200);
+            });
+        });
+        
+        // Анимация появления элементов
+        window.addEventListener('load', () => {
+            const elements = document.querySelectorAll('.step-card');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    el.style.transition = 'all 0.5s ease';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
                 }, index * 200);
             });
-            
-            // Инициализируем кнопку
-            updateCreateButton();
         });
+        
+        // Обработка ошибок
+        window.onerror = function(msg, url, line, col, error) {
+            console.error('Ошибка на странице приветствия:', msg, error);
+        };
     </script>
 </body>
 </html>
