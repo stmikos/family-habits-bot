@@ -355,4 +355,4 @@ MiniApp должно использовать существующий REST API 
 
 ---
 
-**Status**: ✅ M2 Complete - Bot infrastructure ready for MiniApp integration
+**Status**: ✅ M2 Complete - Bot infrastructure ready for MiniApp integration# Force deploy Sat Oct  4 15:51:57 UTC 2025
