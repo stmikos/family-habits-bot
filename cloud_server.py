@@ -39,7 +39,7 @@ print(f"  - WEBAPP_URL: {WEBAPP_URL}")
 app = FastAPI(
     title="Family Habits WebApp + Bot",
     description="Telegram WebApp для семейного трекинга привычек + Bot Webhook v2",
-    version="1.1.0"
+    version="1.2.0"
 )
 
 # CORS для Telegram WebApp
@@ -136,6 +136,20 @@ async def serve_welcome():
         return FileResponse("webapp/welcome.html")
     except:
         return JSONResponse({"error": "File not found"}, status_code=404)
+
+@app.get("/main-menu")
+async def serve_main_menu():
+    print("🏠 Запрос главного меню")
+    try:
+        file_path = "webapp/main-menu.html"
+        if not Path(file_path).exists():
+            print(f"❌ Файл {file_path} не найден")
+            return JSONResponse({"error": f"File {file_path} not found"}, status_code=404)
+        print(f"✅ Отправляем файл {file_path}")
+        return FileResponse(file_path)
+    except Exception as e:
+        print(f"❌ Ошибка загрузки main-menu: {e}")
+        return JSONResponse({"error": f"Main menu page error: {str(e)}"}, status_code=500)
 
 @app.get("/create-task")
 async def serve_create_task():
