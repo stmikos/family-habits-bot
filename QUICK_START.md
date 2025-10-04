@@ -22,10 +22,26 @@ ngrok config add-authtoken ваш_токен_ngrok
 ngrok http 8000
 ```
 
-#### Вариант B: Render/Railway (бесплатный хостинг)
-1. Загрузите проект на GitHub
-2. Подключите к Render/Railway
-3. Укажите команду запуска: `cd webapp && python server.py`
+#### Вариант B: Render (бесплатный хостинг)
+1. Зайдите на [render.com](https://render.com)
+2. Подключите ваш GitHub репозиторий
+3. Создайте новый Web Service:
+   - **Build Command:** `./render-build.sh`
+   - **Start Command:** `python cloud_server.py`
+   - **Environment:** Python 3
+
+#### Вариант C: Railway (бесплатный хостинг)  
+1. Зайдите на [railway.app](https://railway.app)
+2. Подключите GitHub репозиторий
+3. Railway автоматически определит настройки из `railway.json`
+
+#### Вариант D: Heroku (бесплатная альтернатива)
+1. Установите Heroku CLI
+2. Выполните команды:
+```bash
+heroku create your-app-name
+git push heroku main
+```
 
 #### Вариант C: Codespaces URL (если используете GitHub Codespaces)
 Ваш URL будет в формате: `https://название-кодспейса-8000.app.github.dev`
