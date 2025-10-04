@@ -1,21 +1,16 @@
 #!/usr/bin/env python3
 """
-Облачный сервер для Family Habits WebApp
-Оптимизированный для работы на Render, Railway, Heroku
+Минимальный облачный сервер для Family Habits WebApp
+Оптимизированный для работы на Render, Railway, Heroku без Rust зависимостей
 """
 
 import os
-import sys
+import json
 from pathlib import Path
-
-# Добавляем корневую директорию в Python path
-root_dir = Path(__file__).parent.parent
-sys.path.insert(0, str(root_dir))
-
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 import uvicorn
 
 # Получаем порт из переменной окружения (для облачных платформ)
@@ -37,8 +32,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Проверяем наличие папки webapp
+webapp_dir = Path("webapp")
+if not webapp_dir.exists():
+    print("⚠️  Папка webapp не найдена, создаем базовую структуру")
+    webapp_dir.mkdir(exist_ok=True)
+
 # Статические файлы
-app.mount("/static", StaticFiles(directory="webapp"), name="static")
+if webapp_dir.exists():
+    app.mount("/static", StaticFiles(directory="webapp"), name="static")
 
 @app.get("/health")
 async def health_check():
@@ -48,42 +50,72 @@ async def health_check():
 @app.get("/")
 async def serve_index():
     """Главная страница"""
-    return FileResponse("webapp/index.html")
+    try:
+        return FileResponse("webapp/index.html")
+    except:
+        return HTMLResponse("""
+        <html><head><title>Family Habits</title></head>
+        <body><h1>🌱 Family Habits WebApp</h1>
+        <p>Сервер запущен! Загрузите файлы WebApp.</p></body></html>
+        """)
 
 @app.get("/registration")
 async def serve_registration():
-    return FileResponse("webapp/registration.html")
+    try:
+        return FileResponse("webapp/registration.html")
+    except:
+        return JSONResponse({"error": "File not found"}, status_code=404)
 
 @app.get("/registration-children")
 async def serve_registration_children():
-    return FileResponse("webapp/registration-children.html")
+    try:
+        return FileResponse("webapp/registration-children.html")
+    except:
+        return JSONResponse({"error": "File not found"}, status_code=404)
 
 @app.get("/welcome")
 async def serve_welcome():
-    return FileResponse("webapp/welcome.html")
+    try:
+        return FileResponse("webapp/welcome.html")
+    except:
+        return JSONResponse({"error": "File not found"}, status_code=404)
 
 @app.get("/create-task")
 async def serve_create_task():
-    return FileResponse("webapp/create-task.html")
+    try:
+        return FileResponse("webapp/create-task.html")
+    except:
+        return JSONResponse({"error": "File not found"}, status_code=404)
 
 @app.get("/shop")
 async def serve_shop():
-    return FileResponse("webapp/shop.html")
+    try:
+        return FileResponse("webapp/shop.html")
+    except:
+        return JSONResponse({"error": "File not found"}, status_code=404)
 
 @app.get("/profile")
 async def serve_profile():
-    return FileResponse("webapp/profile.html")
+    try:
+        return FileResponse("webapp/profile.html")
+    except:
+        return JSONResponse({"error": "File not found"}, status_code=404)
 
 @app.get("/statistics")
 async def serve_statistics():
-    return FileResponse("webapp/statistics.html")
+    try:
+        return FileResponse("webapp/statistics.html")
+    except:
+        return JSONResponse({"error": "File not found"}, status_code=404)
 
 @app.post("/api/telegram-data")
 async def handle_telegram_data(request: Request):
     """Обработка данных от Telegram WebApp"""
-    data = await request.json()
-    # Здесь можно добавить обработку данных от Telegram
-    return {"status": "success", "received": data}
+    try:
+        data = await request.json()
+        return {"status": "success", "received": data}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 if __name__ == "__main__":
     print(f"🚀 Запуск Family Habits WebApp на {HOST}:{PORT}")
