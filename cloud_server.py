@@ -7,7 +7,8 @@
 import os
 import json
 import asyncio
-import aiohttp
+import urllib.request
+import urllib.parse
 from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
@@ -227,10 +228,16 @@ async def send_webapp_message(chat_id: int):
     }
     
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, json=payload) as response:
-                result = await response.json()
-                print(f"📤 Отправлено сообщение: {result}")
+        # Используем urllib вместо aiohttp для совместимости
+        data = urllib.parse.urlencode({"chat_id": chat_id, 
+                                      "text": payload["text"],
+                                      "reply_markup": json.dumps(keyboard)}).encode()
+        req = urllib.request.Request(url, data=data, method="POST")
+        req.add_header("Content-Type", "application/x-www-form-urlencoded")
+        
+        with urllib.request.urlopen(req) as response:
+            result = json.loads(response.read().decode())
+            print(f"📤 Отправлено сообщение: {result}")
     except Exception as e:
         print(f"❌ Ошибка отправки сообщения: {e}")
 
@@ -244,19 +251,22 @@ async def setup_webhook():
     webhook_url = f"{WEBAPP_URL}/telegram-webhook"
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/setWebhook"
     
-    payload = {
-        "url": webhook_url,
-        "allowed_updates": ["message", "callback_query"]
-    }
-    
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, json=payload) as response:
-                result = await response.json()
-                if result.get("ok"):
-                    print(f"✅ Webhook установлен: {webhook_url}")
-                else:
-                    print(f"❌ Ошибка установки webhook: {result}")
+        # Используем urllib вместо aiohttp
+        data = urllib.parse.urlencode({
+            "url": webhook_url,
+            "allowed_updates": json.dumps(["message", "callback_query"])
+        }).encode()
+        
+        req = urllib.request.Request(url, data=data, method="POST")
+        req.add_header("Content-Type", "application/x-www-form-urlencoded")
+        
+        with urllib.request.urlopen(req) as response:
+            result = json.loads(response.read().decode())
+            if result.get("ok"):
+                print(f"✅ Webhook установлен: {webhook_url}")
+            else:
+                print(f"❌ Ошибка установки webhook: {result}")
     except Exception as e:
         print(f"❌ Ошибка установки webhook: {e}")
 
