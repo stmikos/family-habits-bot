@@ -37,8 +37,8 @@ print(f"  - WEBAPP_URL: {WEBAPP_URL}")
 
 app = FastAPI(
     title="Family Habits WebApp + Bot",
-    description="Telegram WebApp для семейного трекинга привычек + Bot Webhook",
-    version="1.0.0"
+    description="Telegram WebApp для семейного трекинга привычек + Bot Webhook v2",
+    version="1.1.0"
 )
 
 # CORS для Telegram WebApp
