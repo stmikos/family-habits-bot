@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Habits - Тест</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            text-align: center;
+            max-width: 400px;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .mascot {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .status {
+            font-size: 1.2em;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+        }
+        .btn {
+            background: white;
+            color: #2E7D32;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .info {
+            margin-top: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="mascot">🌱</div>
+        <h1 class="title">Family Habits</h1>
+        <div class="status" id="status">Проверяем подключение...</div>
+        
+        <button class="btn" onclick="testTelegram()">Тест Telegram API</button>
+        <button class="btn" onclick="goToApp()">Открыть приложение</button>
+        
+        <div class="info" id="info">
+            Загрузка информации...
+        </div>
+    </div>
+
+    <script>
+        console.log('🌱 Family Habits Test Page загружена');
+        
+        let tg = null;
+        let statusEl = document.getElementById('status');
+        let infoEl = document.getElementById('info');
+        
+        function updateStatus(text, color = 'white') {
+            statusEl.innerHTML = text;
+            statusEl.style.color = color;
+            console.log('Status:', text);
+        }
+        
+        function updateInfo(text) {
+            infoEl.innerHTML = text;
+            console.log('Info:', text);
+        }
+        
+        // Проверяем Telegram WebApp API
+        if (window.Telegram && window.Telegram.WebApp) {
+            tg = window.Telegram.WebApp;
+            updateStatus('✅ Telegram WebApp API подключен!', '#4CAF50');
+            
+            // Инициализируем WebApp
+            tg.ready();
+            tg.expand();
+            
+            // Получаем информацию
+            let info = [
+                `Platform: ${tg.platform}`,
+                `Version: ${tg.version}`,
+                `Theme: ${tg.colorScheme}`,
+                `User: ${tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : 'Unknown'}`
+            ].join('<br>');
+            
+            updateInfo(info);
+            
+            // Настраиваем главную кнопку
+            tg.MainButton.setText('🚀 Начать использование');
+            tg.MainButton.show();
+            tg.MainButton.onClick(() => {
+                goToApp();
+            });
+            
+        } else {
+            updateStatus('❌ Telegram WebApp API не найден', '#f44336');
+            updateInfo('Откройте эту страницу из Telegram бота для полной функциональности');
+        }
+        
+        function testTelegram() {
+            if (tg) {
+                updateStatus('🔄 Тестируем Telegram API...', '#FFC107');
+                
+                try {
+                    tg.showAlert('🎉 Telegram API работает корректно!', () => {
+                        updateStatus('✅ Тест пройден успешно!', '#4CAF50');
+                    });
+                } catch (e) {
+                    updateStatus('❌ Ошибка Telegram API: ' + e.message, '#f44336');
+                }
+            } else {
+                alert('Telegram WebApp API недоступен');
+            }
+        }
+        
+        function goToApp() {
+            updateStatus('🔄 Переход к основному приложению...', '#FFC107');
+            setTimeout(() => {
+                window.location.href = '/registration';
+            }, 1000);
+        }
+        
+        // Обработка ошибок
+        window.onerror = function(msg, url, line, col, error) {
+            console.error('JavaScript Error:', msg, url, line, col, error);
+            updateStatus('❌ JavaScript ошибка: ' + msg, '#f44336');
+        };
+        
+        // Показываем что страница загружена
+        setTimeout(() => {
+            if (!tg) {
+                updateStatus('⚠️ Работает в режиме браузера', '#FFC107');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

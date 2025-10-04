@@ -39,12 +39,22 @@ static_dir = webapp_dir
 @app.get("/", response_class=HTMLResponse)
 async def root():
     """Главная страница - редирект на index.html"""
-    return FileResponse(static_dir / "index.html")
+    return FileResponse(static_dir / "index-simple.html")
 
 @app.get("/health")
 async def health_check():
     """Проверка состояния сервера"""
     return {"status": "ok", "message": "Family Habits WebApp is running"}
+
+@app.get("/test", response_class=HTMLResponse)
+async def test_page():
+    """Тестовая страница для диагностики"""
+    return FileResponse(static_dir / "test.html")
+
+@app.get("/test.html", response_class=HTMLResponse)
+async def test_page_html():
+    """Тестовая страница для диагностики"""
+    return FileResponse(static_dir / "test.html")
 
 @app.get("/index.html", response_class=HTMLResponse)
 async def index_page():
