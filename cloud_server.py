@@ -32,6 +32,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Middleware для логирования запросов
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    print(f"🔍 {request.method} {request.url}")
+    response = await call_next(request)
+    print(f"📤 Ответ: {response.status_code}")
+    return response
+
 # Проверяем наличие папки webapp
 webapp_dir = Path("webapp")
 if not webapp_dir.exists():
@@ -50,9 +58,11 @@ async def health_check():
 @app.get("/")
 async def serve_index():
     """Главная страница"""
+    print("📱 Запрос главной страницы")
     try:
         return FileResponse("webapp/index.html")
-    except:
+    except Exception as e:
+        print(f"❌ Ошибка загрузки index.html: {e}")
         return HTMLResponse("""
         <html><head><title>Family Habits</title></head>
         <body><h1>🌱 Family Habits WebApp</h1>
@@ -61,10 +71,17 @@ async def serve_index():
 
 @app.get("/registration")
 async def serve_registration():
+    print("📝 Запрос страницы регистрации")
     try:
-        return FileResponse("webapp/registration.html")
-    except:
-        return JSONResponse({"error": "File not found"}, status_code=404)
+        file_path = "webapp/registration-new.html"
+        if not Path(file_path).exists():
+            print(f"❌ Файл {file_path} не найден")
+            return JSONResponse({"error": f"File {file_path} not found"}, status_code=404)
+        print(f"✅ Отправляем файл {file_path}")
+        return FileResponse(file_path)
+    except Exception as e:
+        print(f"❌ Ошибка загрузки registration: {e}")
+        return JSONResponse({"error": f"Registration page error: {str(e)}"}, status_code=500)
 
 @app.get("/registration-children")
 async def serve_registration_children():

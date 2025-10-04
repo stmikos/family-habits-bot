@@ -185,14 +185,40 @@
         
         function startApp() {
             console.log('🚀 Запуск приложения...');
+            console.log('Current location:', window.location.href);
+            console.log('Base URL:', window.location.origin);
+            
+            // Показываем индикатор загрузки
+            const btn = document.querySelector('.btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '🔄 Загрузка...';
+            btn.disabled = true;
             
             if (tg) {
-                tg.MainButton.showProgress();
+                try {
+                    tg.MainButton.showProgress();
+                    console.log('✅ Telegram MainButton.showProgress() called');
+                } catch (e) {
+                    console.error('❌ Ошибка с Telegram MainButton:', e);
+                }
             }
             
-            // Переход на страницу регистрации
+            // Проверяем доступность маршрута
+            const registrationUrl = '/registration';
+            console.log('🔍 Пытаемся перейти на:', registrationUrl);
+            
+            // Добавляем таймаут для отладки
             setTimeout(() => {
-                window.location.href = '/registration';
+                try {
+                    console.log('🔄 Выполняем переход...');
+                    window.location.href = registrationUrl;
+                } catch (error) {
+                    console.error('❌ Ошибка при переходе:', error);
+                    // Восстанавливаем кнопку при ошибке
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    document.getElementById('status').innerHTML = '❌ Ошибка перехода: ' + error.message;
+                }
             }, 500);
         }
         
@@ -205,12 +231,38 @@
         // Проверка загрузки
         window.addEventListener('load', () => {
             console.log('📱 Страница полностью загружена');
+            console.log('🔍 Проверяем доступность маршрутов...');
+            
+            // Проверяем доступность маршрута регистрации
+            fetch('/registration', { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('✅ Маршрут /registration доступен');
+                    } else {
+                        console.error('❌ Маршрут /registration недоступен, статус:', response.status);
+                        document.getElementById('status').innerHTML = '⚠️ Проблема с сервером (статус: ' + response.status + ')';
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Ошибка проверки маршрута:', error);
+                    document.getElementById('status').innerHTML = '⚠️ Проблема с подключением к серверу';
+                });
+            
             if (!isReady && window.Telegram && window.Telegram.WebApp) {
                 setTimeout(() => {
                     if (window.Telegram.WebApp.initData) {
                         document.getElementById('status').innerHTML = '✅ Готов к работе в Telegram';
                     }
                 }, 1000);
+            }
+            
+            // Дополнительный обработчик клика для кнопки (на случай проблем с onclick)
+            const startButton = document.querySelector('.btn');
+            if (startButton) {
+                startButton.addEventListener('click', function(event) {
+                    console.log('🖱️ Клик по кнопке зарегистрирован через addEventListener');
+                    // startApp() уже вызывается через onclick, но логируем для отладки
+                });
             }
         });
         
