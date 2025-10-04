@@ -76,6 +76,11 @@ async def welcome_page():
     """Страница приветствия после регистрации"""
     return FileResponse(static_dir / "welcome.html")
 
+@app.get("/welcome", response_class=HTMLResponse)
+async def welcome_page_short():
+    """Страница приветствия после регистрации (короткий URL)"""
+    return FileResponse(static_dir / "welcome.html")
+
 @app.get("/create-task.html", response_class=HTMLResponse)
 async def create_task_page():
     """Страница создания задач"""

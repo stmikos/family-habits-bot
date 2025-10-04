@@ -71,12 +71,14 @@
             box-shadow: 0 12px 40px rgba(0,0,0,0.3);
         }
         
-        .mascot-emoji {
-            font-size: 4em;
+        .mascot-image {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
             animation: bounce 2s ease-in-out infinite;
         }
         
-        .mascot-character:nth-child(2) .mascot-emoji {
+        .mascot-character:nth-child(2) .mascot-image {
             animation-delay: 0.5s;
         }
         
@@ -247,10 +249,10 @@
             
             <div class="mascots-container">
                 <div class="mascot-character">
-                    <span class="mascot-emoji">🌱</span>
+                    <img src="habit-mascot.svg" alt="Habit маскот" class="mascot-image">
                 </div>
                 <div class="mascot-character">
-                    <span class="mascot-emoji">🍃</span>
+                    <img src="habby-mascot.svg" alt="Habby маскот" class="mascot-image">
                 </div>
             </div>
             
