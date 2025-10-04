@@ -73,6 +73,23 @@ async def health_check():
     """Health check для облачных платформ"""
     return {"status": "healthy", "message": "Family Habits WebApp is running"}
 
+@app.get("/version")
+async def version_check():
+    """Проверка версии и конфигурации"""
+    return {
+        "version": "1.1.0",
+        "webapp_url": WEBAPP_URL,
+        "bot_token_configured": bool(TELEGRAM_BOT_TOKEN),
+        "endpoints": [
+            "/",
+            "/health", 
+            "/version",
+            "/telegram-webhook",
+            "/registration",
+            "/webapp-data"
+        ]
+    }
+
 @app.get("/")
 async def serve_index():
     """Главная страница - оптимизированная для Telegram"""
