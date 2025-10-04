@@ -38,8 +38,8 @@ static_dir = webapp_dir
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    """Главная страница - редирект на index.html"""
-    return FileResponse(static_dir / "index.html")
+    """Главная страница - оптимизированная для Telegram WebApp"""
+    return FileResponse(static_dir / "index-telegram.html")
 
 @app.get("/health")
 async def health_check():

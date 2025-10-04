@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Family Habits</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--tg-theme-bg-color, linear-gradient(135deg, #2E7D32, #4CAF50));
+            color: var(--tg-theme-text-color, white);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            background: var(--tg-theme-secondary-bg-color, rgba(255,255,255,0.1));
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .mascot {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .title {
+            font-size: 2.5em;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .status {
+            background: var(--tg-theme-button-color, #4CAF50);
+            color: var(--tg-theme-button-text-color, white);
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-weight: 600;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .btn {
+            background: var(--tg-theme-button-color, linear-gradient(45deg, #4CAF50, #66BB6A));
+            color: var(--tg-theme-button-text-color, white);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+        
+        .features {
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .feature {
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .title {
+                font-size: 2em;
+            }
+            
+            .mascot {
+                font-size: 3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="mascot">🌱</div>
+        <h1 class="title">Family Habits</h1>
+        <p class="subtitle">Семейный трекер привычек</p>
+        
+        <div class="status" id="status">
+            Подключение к Telegram...
+        </div>
+        
+        <button class="btn" onclick="startApp()" id="start-button">
+            🚀 Начать использование
+        </button>
+        
+        <div class="features">
+            <div class="feature">👨‍👩‍👧‍👦 Семейная регистрация</div>
+            <div class="feature">✅ Трекинг привычек</div>
+            <div class="feature">🏪 Система наград</div>
+            <div class="feature">📊 Статистика прогресса</div>
+        </div>
+    </div>
+
+    <script>
+        console.log('🌱 Family Habits загружается для Telegram...');
+        
+        let tg = null;
+        let isReady = false;
+        
+        // Инициализация Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            tg = window.Telegram.WebApp;
+            console.log('✅ Telegram WebApp API найден');
+            console.log('Telegram данные:', {
+                version: tg.version,
+                platform: tg.platform,
+                colorScheme: tg.colorScheme,
+                isExpanded: tg.isExpanded,
+                viewportHeight: tg.viewportHeight
+            });
+            
+            // Инициализация
+            tg.ready();
+            tg.expand();
+            
+            // Настройка темы под Telegram
+            if (tg.colorScheme === 'dark') {
+                document.documentElement.style.setProperty('--tg-theme-bg-color', '#1c1c1d');
+                document.documentElement.style.setProperty('--tg-theme-text-color', '#ffffff');
+            }
+            
+            // Настройка главной кнопки Telegram
+            tg.MainButton.setText('🌱 Открыть Family Habits');
+            tg.MainButton.color = '#4CAF50';
+            tg.MainButton.show();
+            tg.MainButton.onClick(startApp);
+            
+            // Обратная кнопка
+            tg.BackButton.onClick(() => {
+                tg.close();
+            });
+            
+            document.getElementById('status').innerHTML = '✅ Подключено к Telegram';
+            isReady = true;
+            
+        } else {
+            console.log('⚠️ Telegram WebApp API не найден');
+            document.getElementById('status').innerHTML = '⚠️ Откройте из Telegram для работы приложения';
+        }
+        
+        function startApp() {
+            console.log('🚀 Запуск приложения через Telegram...');
+            
+            if (!tg) {
+                alert('Приложение должно быть открыто через Telegram бота');
+                return;
+            }
+            
+            const btn = document.getElementById('start-button');
+            const statusDiv = document.getElementById('status');
+            
+            // Показываем процесс
+            btn.innerHTML = '🔄 Загрузка...';
+            btn.disabled = true;
+            statusDiv.innerHTML = '🔄 Переход на регистрацию...';
+            
+            try {
+                tg.MainButton.showProgress();
+            } catch (e) {
+                console.error('Ошибка с MainButton:', e);
+            }
+            
+            // Переход на регистрацию
+            setTimeout(() => {
+                try {
+                    console.log('🔄 Переход на /registration');
+                    window.location.href = '/registration';
+                } catch (error) {
+                    console.error('❌ Ошибка перехода:', error);
+                    statusDiv.innerHTML = '❌ Ошибка: ' + error.message;
+                    btn.innerHTML = '🚀 Начать использование';
+                    btn.disabled = false;
+                    
+                    if (tg) {
+                        tg.MainButton.hideProgress();
+                    }
+                }
+            }, 500);
+        }
+        
+        // Обработка ошибок
+        window.onerror = function(msg, url, line, col, error) {
+            console.error('Ошибка:', msg, url, line, col, error);
+            if (document.getElementById('status')) {
+                document.getElementById('status').innerHTML = '❌ Ошибка: ' + msg;
+            }
+        };
+        
+        // Обработка закрытия приложения
+        window.addEventListener('beforeunload', () => {
+            if (tg) {
+                tg.close();
+            }
+        });
+        
+        console.log('📱 Family Habits готов для Telegram');
+    </script>
+</body>
+</html>

@@ -57,17 +57,21 @@ async def health_check():
 
 @app.get("/")
 async def serve_index():
-    """Главная страница"""
-    print("📱 Запрос главной страницы")
+    """Главная страница - оптимизированная для Telegram"""
+    print("📱 Запрос главной страницы (Telegram WebApp)")
     try:
-        return FileResponse("webapp/index.html")
+        return FileResponse("webapp/index-telegram.html")
     except Exception as e:
-        print(f"❌ Ошибка загрузки index.html: {e}")
-        return HTMLResponse("""
-        <html><head><title>Family Habits</title></head>
-        <body><h1>🌱 Family Habits WebApp</h1>
-        <p>Сервер запущен! Загрузите файлы WebApp.</p></body></html>
-        """)
+        print(f"❌ Ошибка загрузки index-telegram.html: {e}")
+        # Fallback на обычную версию
+        try:
+            return FileResponse("webapp/index.html")
+        except:
+            return HTMLResponse("""
+            <html><head><title>Family Habits</title></head>
+            <body><h1>🌱 Family Habits WebApp</h1>
+            <p>Откройте приложение через Telegram бота!</p></body></html>
+            """)
 
 @app.get("/registration")
 async def serve_registration():
